@@ -1,28 +1,38 @@
 import ethLogo from "../images/eth-logo.png";
 import tokenLogo from "../images/img.png";
 import {useEffect, useState} from "react";
+import {MdSwapVert} from "react-icons/md";
 
 const SwapItem = (props) => {
+    const [coin, setCoin] = useState(["ETH", "TKB"]);
+    const rev = () => {
+        setCoin([...coin.reverse()]);
+    };
 
     return (
         <div>
             <div id="form">
-                { props.tab === "provide" &&
+                {props.tab === "provide" &&
                 (<h6 className="text-white"> The 0.03% charged per trade to PLs are fixed!</h6>)
                 }
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
-                        <img src={ethLogo} className="token_image" id="from_token_img" alt=""/>
-                        <span className="p-3" id="from_token_text">ETH</span>
+                        <img src={ethLogo} className="token_image select-none" id="from_token_img" alt=""/>
+                        <span className="p-3 select-none" id="from_token_text">{coin[0]}</span>
                     </div>
                     <div className="swapbox_select">
                         <input className="number form-control" placeholder="amount" id="from_amount"/>
                     </div>
                 </div>
+
+                <div className="flex justify-center " onClick={() => rev()}>
+                    <MdSwapVert className="object-center text-3xl hover:rotate-180"/>
+                </div>
+
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
-                        <img src={tokenLogo} className="token_image " id="to_token_img" alt=""/>
-                        <span className="p-3" id="to_token_text">TKB</span>
+                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <span className="p-3 select-none" id="to_token_text">{coin[1]}</span>
                     </div>
                     <div className="swapbox_select">
                         <input className="number form-control" placeholder="amount" id="to_amount"/>
