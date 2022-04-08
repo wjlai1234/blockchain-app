@@ -2,11 +2,11 @@ import {SiEthereum} from "react-icons/si";
 import {BsInfoCircle} from "react-icons/bs";
 import  { useContext } from "react";
 import { TransactionContext } from "../context/TransactionContext";
-import { shortenAddress } from "../utils/shortenAddress";
+import {shortenAddress, shortenBalance} from "../utils/shortenAddress";
 const companyCommonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 
 const Welcome = () => {
-    const { currentAccount, connectWallet} = useContext(TransactionContext);
+    const { currentAccount,currentBalance} = useContext(TransactionContext);
 
 
     return (
@@ -39,7 +39,9 @@ const Welcome = () => {
                                 <div
                                     className="w-10 h-10 rounded-full border-2 border-white flex justify-center items-center">
                                     <SiEthereum fontSize={21} color="#fff"/>
+
                                 </div>
+                                <h5  className="pl-20 pb3" color="#fff">{shortenBalance(currentBalance)} ETH</h5>
                                 <BsInfoCircle fontSize={17} color="#fff"/>
                             </div>
                             <div>
