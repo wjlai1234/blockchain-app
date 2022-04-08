@@ -1,12 +1,12 @@
 import {SiEthereum} from "react-icons/si";
 import {BsInfoCircle} from "react-icons/bs";
 import  { useContext } from "react";
-// import { TransactionContext } from "../context/TransactionContext";
-
+import { TransactionContext } from "../context/TransactionContext";
+import { shortenAddress } from "../utils/shortenAddress";
 const companyCommonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 
 const Welcome = () => {
-    // const { currentAccount, connectWallet, handleChange, sendTransaction, formData, isLoading } = useContext(TransactionContext);
+    const { currentAccount, connectWallet} = useContext(TransactionContext);
 
 
     return (
@@ -44,8 +44,8 @@ const Welcome = () => {
                             </div>
                             <div>
                                 <p className="text-white font-light text-sm">
-                                    {/*{shortenAddress(currentAccount)}*/}
-                                    Address
+                                    {currentAccount && (shortenAddress(currentAccount))}
+                                    {!currentAccount && ("Address....")}
                                 </p>
                                 <p className="text-white font-semibold text-lg mt-1">
                                     Ethereum

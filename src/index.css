@@ -130,6 +130,36 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+.selectTab {
+    width: 500px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px auto;
+    margin-top: 5px;
+}
+.tabStyle {
+    text-align: center;
+    width: 110px;
+    padding: 5px;
+    font: 18px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    margin-top: 15px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.tabStyle:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+.activeTab {
+    background: rgba(255, 255, 255, 0.1);
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
