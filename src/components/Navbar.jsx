@@ -22,14 +22,17 @@ const Navbar = () => {
         {["Wallets", "Details", "Swap", ""].map((item, index) => (
           <NavBarItem key={item + index} title={item} />
         ))}
-          {!currentAccount && (<li onClick={connectWallet} className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
+
+        {!currentAccount && (
+        <li onClick={connectWallet} className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
           Connect
         </li>)}
-          {currentAccount && (<li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full  select-none ">
-              Connected
-          </li>)}
+        {currentAccount && (
+        <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full  select-none ">
+          Connected
+        </li>)}
       </ul>
-      <div className="flex relative">
+      {/* <div className="flex relative">
         {!toggleMenu && (
           <HiMenuAlt4 fontSize={28} className="text-white md:hidden cursor-pointer" onClick={() => setToggleMenu(true)} />
         )}
@@ -42,12 +45,12 @@ const Navbar = () => {
             flex flex-col justify-start items-end rounded-md blue-glassmorphism text-white animate-slide-in"
           >
             <li className="text-xl w-full my-2"><AiOutlineClose onClick={() => setToggleMenu(false)} /></li>
-            {["Market", "Exchange", "Tutorials", "Wallets"].map(
+            {["Wallets", "Details", "Swap", ""].map(
               (item, index) => <NavBarItem key={item + index} title={item} classprops="my-2 text-lg" />,
             )}
           </ul>
         )}
-      </div>
+      </div> */}
     </nav>
   );
 };

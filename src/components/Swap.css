@@ -1,0 +1,71 @@
+.pool-subCon {
+    background-color: rgb(10, 12, 24);
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 15px;
+}
+
+.pool-subCon .title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.pool-subCon .symbol {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.pool-subCon .coins-con {
+    background-color: rgb(20, 25, 48);
+    border-radius: 10px;
+    padding: 5px 15px;
+}
+
+.pool-subCon .coins-con img {
+    height: 40px;
+    width: 40px;
+}
+
+.coin-details {
+    display: grid;
+    grid-template-columns: 40px calc(100% - 40px);
+    padding: 10px 0;
+}
+
+.coin-details .info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.coin-details .info .percent {
+    background-color: rgb(83, 83, 126);
+    margin-left: 20px;
+    padding: 3px;
+    border-radius: 1px;
+    font-size: 14px;
+}
+
+.fix_percent {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+}
+
+.fix_percent button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.withdraw_sub_con {
+    background-color: rgb(10, 12, 24);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.currentPercent {
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 24px;
+}
