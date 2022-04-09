@@ -45,3 +45,27 @@
     border-radius: 1px;
     font-size: 14px;
 }
+
+.fix_percent {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+}
+
+.fix_percent button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.withdraw_sub_con {
+    background-color: rgb(10, 12, 24);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.currentPercent {
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 24px;
+}

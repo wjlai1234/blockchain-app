@@ -3,6 +3,7 @@ import tokenLogo from "../images/img.png";
 import {useContext, useEffect, useState} from "react";
 import {TransactionContext} from "../context/TransactionContext";
 import {MdSwapVert, MdAdd} from "react-icons/md";
+import { useRanger } from 'react-ranger';
 import './Swap.css';
 
 const ethers = require('ethers')
@@ -205,6 +206,8 @@ const AddLiquidity = () => {
 };
 
 const Pool = () => {
+    
+
     return (
         <>
             <div className="pool-subCon">
@@ -256,30 +259,81 @@ const Pool = () => {
 
 
 const Withdraw = () => {
+    const [values, setValues] = useState([10]);
+
+    const { getTrackProps, handles } = useRanger({
+        min: 0,
+        max: 100,
+        stepSize: 1,
+        values,
+        onChange: setValues
+    });
+    
+    // const setFix = useRanger({
+    //     values,
+    //     onChange: setValues
+    // })
     return (
         <div>
-            <div></div>
-            <div></div>
-            <div>Pooled ETH: </div>
-            <div>Pooled CAY: </div>
-            <div>Amount to remove (percentage): </div>
-            <div>Decrease Liquidity</div>
+            <div className="withdraw_sub_con">
+                <div>Amount</div>
+
+                <div className="currentPercent">{values} %</div>
+                {/* <div className="fix_percent">
+                    <button onClick={() => setFix(25)}>25%</button>
+                    <button>50%</button>
+                    <button>75%</button>
+                    <button>Max</button>
+                </div> */}
+            
+                <div
+                    {...getTrackProps({
+                    style: {
+                        height: "4px",
+                        background: "#ddd",
+                        boxShadow: "inset 0 1px 2px rgba(0,0,0,.6)",
+                        borderRadius: "2px"
+                    }
+                    })}
+                >
+                    {handles.map(({ getHandleProps }) => (
+                    <button
+                        {...getHandleProps({
+                        style: {
+                            width: "14px",
+                            height: "14px",
+                            outline: "none",
+                            borderRadius: "100%",
+                            background: "linear-gradient(to bottom, #eee 45%, #ddd 55%)",
+                            border: "solid 1px #888"
+                        }
+                        })}
+                    />
+                    ))}
+                </div>
+            </div>
+            
+            <div className="withdraw_sub_con">
+                <div className="coin-details">
+                    <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                    <div className="info">
+                        Pooled ETH: 0
+                    </div>
+                </div>
+                <div className="coin-details">
+                    <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                    <div className="info">
+                        Pooled CAY: 0
+                    </div>
+                </div>
+            </div>
 
             <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                     id="swap_button"
                     // onClick={() => {
-                    //     if (coin[0] === "ETH") {
-                    //         const buy = ethers.utils.parseUnits(etherAmount, "ether");
-                    //         console.log("formatEther" + buy)
-                    //         buyTokens(buy)
-                    //     } else {
-                    //         const buy = ethers.utils.parseUnits(tokenAmount, "ether");
-                    //         console.log("formatUnits" + buy)
-                    //         sellTokens(buy)
-                    //     }
                     // }}
             >
-                Add
+                Remove
             </button>
         </div>
     );
