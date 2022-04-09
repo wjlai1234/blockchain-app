@@ -39,38 +39,29 @@ export const TransactionsProvider = ({children}) => {
                 const address = accounts[0]
 
                 let signer;
-
                 signer = provider.getSigner()
-                console.log("signer:" + signer);
+                const networkId = 5777
+
                 try {
-                    //Load Token
-                    //  const networkId =   (await providers.getNetwork()).chainId
-                    const networkId = 5777
-                    console.log("networkId:" + networkId);
+                    ///Load Token Contract
                     const tokenData = Token.networks[networkId]
-                    console.log("tokenData:" + tokenData.toString());
-                    console.log("tokenData:" + tokenData.address);
                     if (tokenData) {
-                        const token = new ethers.Contract(tokenData.address, Token.abi, signer);
-                        console.log("token:" + token.toString());
+                        const token = new ethers.Contract(tokenData.address, Token.abi, signer);console.log("token:" + token.toString());
                         setTokenContract(token)
                     } else {
                         window.alert('Token contract not deployed to detected network.')
                     }
 
-                    //Load Swap
+                    //Load Swap Contract
                     const swapData = Swap.networks[networkId]
-                    console.log("swapData:" + swapData);
-                    console.log("swapData:" + swapData.address);
                     if (swapData) {
-                        const swap = new ethers.Contract(swapData.address, Swap.abi, signer);
-                        console.log("swap:" + swap);
+                        const swap = new ethers.Contract(swapData.address, Swap.abi, signer);console.log("swap:" + swap);
                         setSwapContract(swap)
 
                     } else {
                         window.alert('Swap contract not deployed to detected network.')
                     }
-
+                    //Load Pool Contract
                 } catch (err) {
                     alert("CONTRACT_ADDRESS not set properly");
                     console.log("err:" + err);
