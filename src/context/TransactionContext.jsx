@@ -1,6 +1,6 @@
 import {createContext, useEffect, useState} from "react";
-import Token from '../contracts/Token.json'
-import Swap from '../contracts/Swap.json'
+import Token from '../abis/Token.json'
+import Swap from '../abis/Swap.json'
 
 const ethers = require('ethers')
 const {ethereum} = window;
