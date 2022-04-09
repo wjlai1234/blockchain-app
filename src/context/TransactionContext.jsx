@@ -105,7 +105,7 @@ export const TransactionsProvider = ({children}) => {
     }
     useEffect(async () => {
         checkIfWalletIsConnect().then(r => console.log("r" + r));
-        let result = await balance("0x1770356BaD37D5AAa942723b40e7d225dDe1E9BD")
+        //let result = await balance("0x1770356BaD37D5AAa942723b40e7d225dDe1E9BD")
 
     }, []);
 
