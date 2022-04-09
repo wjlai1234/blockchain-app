@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  scroll-behavior: smooth;
 }
 
 .App-logo {
@@ -37,3 +38,12 @@
   }
 }
 
+.navItem {
+  color: white;
+  text-decoration: none;
+}
+
+.navItem:hover {
+  color: white;
+  text-decoration: none;
+}
