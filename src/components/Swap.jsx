@@ -207,23 +207,48 @@ const AddLiquidity = () => {
 const Pool = () => {
     return (
         <>
-            <div>
-                <div>Liquidity</div>
-                <div>$-</div>
-                
-                <div>CAY: 0.0000 50%</div>
-                <div>ETH: 0.0000 50%</div>
+            <div className="pool-subCon">
+                <div className="title">Liquidity</div>
+                <div className="symbol">$-</div>
+                <br/>
+                <div className="coins-con">
+                    <div className="coin-details">
+                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <div className="info">
+                            CAY: 0.0000 
+                            <span className="percent"> 50%</span>
+                        </div>
+                    </div>
+                    <div className="coin-details">
+                        <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <div className="info">
+                            ETH: 0.0000
+                            <span className="percent"> 50%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div>
-                <div>Liquidity</div>
-                <div>$-</div>
-                
-                <div>CAY: 0</div>
-                <div>ETH: 0</div>
-            </div>
+            <div className="pool-subCon">
+                <div className="title">Unclaimed fees</div>
+                <div className="symbol">$-</div>
+                <br/>
 
-            
+                <div className="coins-con">
+                    <div className="coin-details">
+                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <div className="info">
+                            CAY: 0
+                        </div>
+                    </div>
+                    <div className="coin-details">
+                        <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <div className="info">
+                            ETH: 0
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };
@@ -262,7 +287,7 @@ const Withdraw = () => {
 
 
 const Main = () => {
-    const [activeTab, setActiveTab] = useState("AddLiquidity");
+    const [activeTab, setActiveTab] = useState("Pool");
     const changeTab = (tab) => {
         setActiveTab(tab);
     };
@@ -270,8 +295,8 @@ const Main = () => {
         <div className="gradient-bg-transactions pb-20">
             <div className="container ">
                 <div className="row">
-                    {/* <div className="col col-md-6 offset-md-3 white-glassmorphism" id="window"> */}
-                    <div className="col col-md-10 offset-md-1 white-glassmorphism" id="window">
+                    <div className="col col-md-6 offset-md-3 white-glassmorphism" id="window">
+                    {/* <div className="col col-md-10 offset-md-1 white-glassmorphism" id="window"> */}
                         <div className="selectTab">
                             <div
                                 className={"tabStyle " + (activeTab === "Swap" ? "activeTab" : "")}

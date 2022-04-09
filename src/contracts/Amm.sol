@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+import "./Token.sol";
+
 contract AMM {
     
-    uint256 totalShare;
     uint256 totalEthToken;//total amount of Eth token in the pool
     uint256 totalTkbToken;//total amount of TkB token in the pool
     uint256 K;//K constant in X*Y = K
@@ -12,18 +13,11 @@ contract AMM {
 
     mapping(address => uint256) share;
     mapping(address => uint256) balanceEth;
-    mapping(address => uint256) balanceCAY;
-
-    //balance and quantity validity check
-    modifier validCheck(mapping(address => uint256) storage tokenBalance, uint256 tokenQty) {
-        require(tokenQty > 0, "Amount must more than zero.");
-        require(tokenQty <= tokenBalance[msg.sender], "Not enough balance.");
-        _;
-    }
+    mapping(address => uint256) balanceTkb;
     
-    //no share, cannot withdraw from liquidity pool
+    //no liquidity, cannot withdraw from liquidity pool
     modifier activePool() {
-        require(totalShare > 0, "Empty pool, please add liquidity.");
+        require(totalEthToken > 0 && totalTkbToken > 0, "Empty pool, please add liquidity.");
         _;
     }
 
@@ -33,15 +27,14 @@ contract AMM {
     }
 
     //get user balance token in the pool
-    function getUserPoolBalance() external view returns (uint256 amountEth, uint amountCAY, uint userShare) {
+    function getUserPoolBalance() external view returns (uint256 amountEth, uint amountTkb) {
         amountEth = balanceEth[msg.sender];
-        amountCAY = balanceCAY[msg.sender];
-        userShare = share[msg.sender];
+        amountTkb = balanceTkb[msg.sender];
     }
 
     //to get the total Tkb token needed to add into pool
-    function getAddPoolTkbRequirement(uint256 ethToken) public view activePool returns(uint256 reqCAYToken) {
-        reqCAYToken = ethToken / totalEthToken * totalTkbToken ;
+    function getAddPoolTkbRequirement(uint256 ethToken) public view activePool returns(uint256 reqTkbToken) {
+        reqTkbToken = ethToken / totalEthToken * totalTkbToken ;
     }
 
     //to get the total eth token needed to add into pool
@@ -51,96 +44,104 @@ contract AMM {
 
 
     //add liquidity into the pool, set K constant if first added, store share % into user
-    function addLiquidity(uint256 addEthToken, uint256 addCAYToken) external validCheck (balanceEth, addEthToken) validCheck (balanceCAY, addCAYToken) returns(uint256 _share) {
-        if(totalShare == 0) { // Genesis liquidity is issued 100 Shares
-            _share = 100 * PRECISION;
-        } else{
-            uint256 share1 = addEthToken / totalEthToken * totalShare; 
-            uint256 share2 = addCAYToken / totalTkbToken * totalShare;
-            require(share1 == share2, "Equivalent value of tokens not provided...");
-            _share = share1;
+    function addLiquidity(
+        address tokenB,
+        uint256 addEthToken, 
+        uint256 addTkbToken
+        //address to
+        ) external {
+        require(addEthToken > 0 && addTkbToken > 0, "Need more than Zero value");
+        if(totalEthToken == 0 && totalTkbToken == 0)  // Genesis liquidity is issued 100 Shares
+        {
+            totalEthToken = addEthToken;
+            totalTkbToken = addTkbToken;
+            K = totalEthToken * totalTkbToken;
+        }
+        else
+        {
+            totalEthToken += addEthToken;
+            totalTkbToken += addTkbToken;
         }
 
-        require(_share > 0, "Asset value less than threshold for contribution!");
-        balanceEth[msg.sender] -= addEthToken;
-        balanceCAY[msg.sender] -= addCAYToken;
+        balanceEth[msg.sender] += addEthToken;
+        balanceTkb[msg.sender] += addTkbToken;
 
-        totalEthToken += addEthToken;
-        totalTkbToken += addCAYToken;
-        K = totalEthToken * totalTkbToken;
-
-        totalShare += _share;
-        share[msg.sender] += _share;
+        transferETH(address(this), addEthToken);
+        Token(tokenB).transferFrom(msg.sender, address(this), addTkbToken);
     }
 
     //get withdraw total tokens
-    function getWithdrawToken(uint256 _share) public view activePool returns(uint256 withdrawEth, uint256 withdrawCAY) {
-        require(_share <= totalShare, "Share should be less than or equal to Total Share");
-        withdrawEth = _share / totalShare * totalEthToken;
-        withdrawCAY = _share / totalShare * totalTkbToken;
+    function getWithdrawToken () external view activePool returns(uint256 withdrawEth, uint256 withdrawTkb) {
+        withdrawEth = balanceEth[msg.sender];
+        withdrawTkb = balanceTkb[msg.sender];
     }
 
     //withdraw  tokens from pool and add the tokens back to user
-    function withdraw(uint256 _share) external activePool validCheck(share, _share) returns(uint256 withdrawEth, uint256 withdrawTkb) {
-        (withdrawEth, withdrawTkb) = getWithdrawToken(_share);
-        
-        share[msg.sender] -= _share;
-        totalShare -= _share;
+    function withdraw(uint256 _share) external activePool returns(uint256 withdrawEth, uint256 withdrawTkb) {
+        require(_share > 0,"cannot be zero value");
+        withdrawEth = balanceEth[msg.sender] * _share / 100;
+        withdrawTkb = balanceTkb[msg.sender] * _share / 100;
 
         totalEthToken -= withdrawEth;
         totalTkbToken -= withdrawTkb;
         K = totalEthToken * totalTkbToken;
 
-        balanceEth[msg.sender] += withdrawEth;
-        balanceCAY[msg.sender] += withdrawTkb;
+        balanceEth[msg.sender] -= withdrawEth;
+        balanceTkb[msg.sender] -= withdrawTkb;
     }
 
-    // Returns the amount of CAY token that the user will get when swapping a exact amount of Eth token
-    function getExactEthforCAY(uint256 _amountEth) public view activePool returns(uint256 amountCAY) {
-        amountCAY = getAmountOut(_amountEth, totalEthToken, totalTkbToken);
+    // Returns the amount of TkB token that the user will get when swapping a exact amount of Eth token
+    function getExactEthforTkB(uint256 _amountEth) public view activePool returns(uint256 amountTkb) {
+        amountTkb = getAmountOut(_amountEth, totalEthToken, totalTkbToken);
 
         // To ensure that Token2's pool is not completely depleted leading to inf:0 ratio
-        if(amountCAY == totalTkbToken) amountCAY--;
+        if(amountTkb >= totalTkbToken) amountTkb = totalTkbToken - 1;
     }
     
-    // Returns the amount of Eth token needed to swap a exact amount of CAY token
-    function getEthforExactCAY(uint256 _amountTkB) public view activePool returns(uint256 amountEth) {
+    // Returns the amount of Eth token needed to swap a exact amount of TkB token
+    function getEthforExactTkB(uint256 _amountTkB) public view activePool returns(uint256 amountEth) {
         require(_amountTkB < totalTkbToken, "Insufficient pool balance");
         amountEth = getAmountIn(_amountTkB, totalEthToken, totalTkbToken);
     }
 
-    // Swaps Eth token to CAY token using algorithmic price determination
-    function swapEthforTkB(uint256 _amountEth) external activePool validCheck(balanceEth, _amountEth) returns(uint256 amountTkb) {
-        amountTkb = getExactEthforCAY(_amountEth);
+    // Swaps Eth token to TkB token using algorithmic price determination
+    function swapEthforTkB(address tokenB, uint256 _amountEth) external activePool returns(uint256 amountTkb) {
+        require(_amountEth > 0, "amount can't be 0");
+        amountTkb = getExactEthforTkB(_amountEth);
 
-        balanceEth[msg.sender] -= _amountEth;
         totalEthToken += _amountEth;
         totalTkbToken -= amountTkb;
-        balanceCAY[msg.sender] += amountTkb;
+        K = totalEthToken * totalTkbToken;
+        
+        transferETH(address(this), _amountEth);
+        Token(tokenB).transfer(msg.sender, amountTkb);
     }
 
     // Returns the amount of Eth token that the user will get when swapping a exact amount of Tkb token
-    function getExactTkbforEth(uint256 _amountCAY) public view activePool returns(uint256 amountEth) {
-        amountEth = getAmountOut(_amountCAY, totalTkbToken, totalEthToken);
+    function getExactTkbforEth(uint256 _amountTkb) public view activePool returns(uint256 amountEth) {
+        amountEth = getAmountOut(_amountTkb, totalTkbToken, totalEthToken);
 
         // To ensure that Token1's pool is not completely depleted leading to inf:0 ratio
-        if(amountEth == totalEthToken) amountEth--;
+        if(amountEth >= totalEthToken) amountEth = totalEthToken - 1;
     }
     
     // Returns the amount of Tkb token needed to swap a exact amount of Eth token
-    function getTkbforExactEth(uint256 _amountEth) public view activePool returns(uint256 amountCAY) {
+    function getTkbforExactEth(uint256 _amountEth) public view activePool returns(uint256 amountTkb) {
         require(_amountEth < totalEthToken, "Insufficient pool balance");
-        amountCAY = getAmountIn(_amountEth, totalTkbToken, totalEthToken);
+        amountTkb = getAmountIn(_amountEth, totalTkbToken, totalEthToken);
     }
 
     // Swaps TkB token to Eth token using algorithmic price determination
-    function swapTkBforEth(uint256 _amountCAY) external activePool validCheck(balanceCAY, _amountCAY) returns(uint256 amountEth) {
-        amountEth = getExactTkbforEth(_amountCAY);
+    function swapTkBforEth(address tokenB, uint256 _amountTkb) external activePool returns(uint256 amountEth) {
+        require(_amountTkb > 0, "amount can't be 0");
+        amountEth = getExactTkbforEth(_amountTkb);
 
-        balanceCAY[msg.sender] -= _amountCAY;
-        totalTkbToken += _amountCAY;
+        totalTkbToken += _amountTkb;
         totalEthToken -= amountEth;
-        balanceEth[msg.sender] += amountEth;
+        K = totalEthToken * totalTkbToken;
+
+        transferETH(msg.sender, amountEth);
+        Token(tokenB).transferFrom(msg.sender, address(this), _amountTkb);
     }
 
     // given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset
@@ -162,6 +163,10 @@ contract AMM {
         amountIn = (numerator / denominator) + 1;
     }
 
-
+    //to transfer ether
+    function transferETH(address to, uint256 value) internal {
+        (bool success, ) = to.call{value: value}(new bytes(0));
+        require(success, 'ETH transfer failed');
+    }
 
 }
