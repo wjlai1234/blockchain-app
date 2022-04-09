@@ -50,4 +50,8 @@ contract Token {
         emit Transfer(_from, _to, _value);
         return true;
     }
+
+    function balance(address addr) public view returns (uint256) {
+        return balanceOf[addr];
+    }
 }
