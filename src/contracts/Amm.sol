@@ -70,7 +70,7 @@ contract AMM {
         uint256 addCAYTokenInPool, 
         uint256 addKENTokenInPool
         ) payable public {
-        require(addCAYTokenInPool > 0 || addKENTokenInPool > 0, "Need more than Zero value");
+        require(addCAYTokenInPool > 0 && addKENTokenInPool > 0, "Need more than Zero value");
         uint256 share;
         if(totalCAYTokenInPool == 0 && totalKENTokenInPool == 0)  // Genesis liquidity is issued 100 Shares
         {
