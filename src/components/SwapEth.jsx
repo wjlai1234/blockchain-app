@@ -56,6 +56,11 @@ const SwapItem = (props) => {
         setValue(event.target.value);
     };
 
+    useEffect(() => {
+        balanceCAYToken(currentAccount);
+        balanceKENToken(currentAccount);
+    }, []);
+
     return (
         <div>
             <div id="form" onSubmit={(event) => {
