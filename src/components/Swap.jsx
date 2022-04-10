@@ -48,7 +48,7 @@ const SwapItem = (props) => {
                             <input onChange={(event) => {
                                 const tokenAmount = event.target.value.toString()
                                 console.log("tokenAmount" + tokenAmount);
-                                setEtherAmount(tokenAmount / 100)
+                                setEtherAmount(tokenAmount)
                                 setTokenAmount(tokenAmount)
                             }}
                                    className="number form-control" placeholder="amount" id="to_amount"/>
@@ -59,7 +59,7 @@ const SwapItem = (props) => {
                                 onChange={(event) => {
                                     const etherAmount = event.target.value.toString()
                                     console.log("etherAmount" + etherAmount);
-                                    let formatAmount = etherAmount * 100
+                                    let formatAmount = etherAmount
                                     setTokenAmount(formatAmount)
                                     console.log("tokenAmount" + formatAmount);
                                     setEtherAmount(etherAmount)
