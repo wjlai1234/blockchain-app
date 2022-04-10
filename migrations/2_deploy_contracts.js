@@ -17,8 +17,8 @@ module.exports = async function (deployer) {
   const swap = await Swap.deployed()
 
   // Transfer all tokens to EthSwap (1 million)
-  await CAYToken.transfer(swap.address, '1000000000000000000000000')
-  await KENToken.transfer(swap.address, '1000000000000000000000000')
+  await CAYToken.transfer(swap.address, '10000000000000000000000000')
+  await KENToken.transfer(swap.address, '10000000000000000000000000')
 
   // Deploy AMM
    await deployer.deploy(Amm, CAYTOKEN.address, KENTOKEN.address);
