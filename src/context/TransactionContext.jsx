@@ -20,7 +20,6 @@ export const TransactionsProvider = ({children}) => {
 
     const [cayPoolAmount, setCAYPoolAmount] = useState(0.00);
     const [kenPoolAmount, setKENPoolAmount] = useState(0.00);
-
     const connectWallet = async () => {
         try {
             if (!ethereum) return alert("Please install MetaMask.");
@@ -173,15 +172,40 @@ export const TransactionsProvider = ({children}) => {
         console.log("checkBothTokenAmountInPool", response2);
     }
 
+    const getAddPoolCAYRequirement = async (KENAmount) => {
+        let response  = await poolContract.getAddPoolCAYRequirement(KENAmount)
+        let res0 = await response.wait();
+        console.log("getAddPoolCAYRequirement", res0);
+    }
+
+    const getAddPoolKENRequirement = async (CAYAmount) => {
+        let response  = await poolContract.getAddPoolKENRequirement(CAYAmount)
+        let res0 = await response.wait();
+        console.log("getAddPoolKENRequirement", res0);
+    }
+
+    const swapCAYforKEN = async (CAYAmount) => {
+        let response  = await poolContract.swapCAYforKEN(CAYAmount)
+        let res0 = await response.wait();
+        console.log("swapCAYforKEN", res0);
+    }
+
+    const swapKENforCAY = async (KENAmount) => {
+        let response  = await poolContract.swapKENforCAY(KENAmount)
+        let res0 = await response.wait();
+        console.log("swapKENforCAY", res0);
+    }
+
     useEffect(async () => {
         checkIfWalletIsConnect().then(r => console.log("r" + r));
-        
     }, []);
 
     return (
         <TransactionContext.Provider value={{currentAccount, connectWallet,
             currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,
             sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool,
+            getAddPoolCAYRequirement,getAddPoolKENRequirement,
+            swapCAYforKEN,swapKENforCAY,
             currentCAYTokenBalance, currentKENTokenBalance
         }}>
             {children}
