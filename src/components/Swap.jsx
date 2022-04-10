@@ -18,11 +18,14 @@ const SwapItem = (props) => {
         balanceCAYToken,
         currentBalance,
         currentAccount,
-        currentCAYTokenBalance
+        currentCAYTokenBalance,
+        getExactKENforCAY,
+        swapCAYforKEN,
+        swapKENforCAY
     } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["CAY", "KEN"]);
-    const [etherAmount, setEtherAmount] = useState(0);
-    const [tokenAmount, setTokenAmount] = useState(0);
+    const [cayAmount, setCayAmount] = useState(0);
+    const [kenAmount, setKenAmount] = useState(0);
     const rev = () => {
         setCoin([...coin.reverse()]);
     };
@@ -33,9 +36,9 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                    {coin[1] === "KEN" && coin[0] === "CAY" && props.tab === "Swap" && (
-                        <span className="float-left text-white">Balance: {currentBalance} CAY</span>
-                    )}
+                    {/* {coin[1] === "KEN" && coin[0] === "CAY" && props.tab === "Swap" && ( */}
+                        <span className="float-left text-white">Balance: 0 {coin[0]}</span>
+                    {/* )} */}
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
@@ -47,10 +50,10 @@ const SwapItem = (props) => {
                         {coin[0] === "KEN" &&
                         (
                             <input onChange={(event) => {
-                                const tokenAmount = event.target.value.toString()
-                                console.log("tokenAmount" + tokenAmount);
-                                setEtherAmount(tokenAmount)
-                                setTokenAmount(tokenAmount)
+                                const kenAmount = event.target.value.toString()
+                                console.log("kenAmount" + kenAmount);
+                                setCayAmount(kenAmount)
+                                setKenAmount(kenAmount)
                             }}
                                    className="number form-control" placeholder="amount" id="to_amount"/>
                         )
@@ -58,12 +61,12 @@ const SwapItem = (props) => {
                         {coin[0] === "CAY" && (
                             <input
                                 onChange={(event) => {
-                                    const etherAmount = event.target.value.toString()
-                                    console.log("etherAmount" + etherAmount);
-                                    let formatAmount = etherAmount
-                                    setTokenAmount(formatAmount)
-                                    console.log("tokenAmount" + formatAmount);
-                                    setEtherAmount(etherAmount)
+                                    const cayAmount = event.target.value.toString()
+                                    console.log("cayAmount" + cayAmount);
+                                    let formatAmount = cayAmount
+                                    setKenAmount(formatAmount)
+                                    console.log("kenAmount" + formatAmount);
+                                    setCayAmount(cayAmount)
                                 }}
                                 className="number form-control select-none" placeholder="amount" id="from_amount"
                             />
@@ -72,17 +75,13 @@ const SwapItem = (props) => {
                 </div>
 
                 {props.tab === "Swap" && (
-                    <div className="flex justify-center " onClick={() => rev()}>
+                    <div className="flex justify-center " onClick={() => rev()} style={{ cursor: "pointer" }}>
                         <MdSwapVert className="object-center text-3xl hover:rotate-180"/>
                     </div>)}
-                {props.tab === "pool" && (
-                    <div className="flex justify-center ">
-                        <MdAdd className="object-center text-3xl hover:rotate-180"/>
-                    </div>)}
                 <div className="flex justify-content-end">
-                    {coin[0] === "KEN" && coin[1] === "CAY" && props.tab === "Swap" && (
-                        <span className="float-left text-white">Balance: {currentBalance} CAY</span>
-                    )}
+                    {/* {coin[0] === "KEN" && coin[1] === "CAY" && props.tab === "Swap" && ( */}
+                        <span className="float-left text-white">Balance: 0 {coin[1]}</span>
+                    {/* // )} */}
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
@@ -94,46 +93,50 @@ const SwapItem = (props) => {
                     <div className="swapbox_select">
                         {coin[1] === "CAY" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                                   disabled value={etherAmount}/>
+                                   disabled value={cayAmount}/>
                         )}
                         {coin[1] === "KEN" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                                   disabled value={tokenAmount}/>
+                                   disabled value={kenAmount}/>
                         )}
                     </div>
                 </div>
 
-                {props.tab === "Swap" && coin[0] === "CAY" &&
+                {/* {props.tab === "Swap" && coin[0] === "CAY" &&
                 (<div className="flex justify-content-between text-white mb-3">
                     <span className=" text-white">Exchange Rate</span>
-                    <span className=" text-white">1 CAY = 1 KEN</span>
+                    <span className=" text-white">1 CAY =  KEN</span>
                 </div>)
                 }
                 {props.tab === "Swap" && coin[0] === "KEN" &&
                 (<div className="flex justify-content-between text-white mb-3">
                     <span className=" text-white">Exchange Rate</span>
-                    <span className=" text-white">1 KEN = 1 CAY</span>
+                    <span className=" text-white">1 KEN =  CAY</span>
                 </div>)
-                }
+                } */}
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={async () => {
                             if (coin[0] === "CAY") {
-                                const buy = ethers.utils.parseUnits(etherAmount, "ether");
-                                console.log("formatEther" + buy)
-                                buyTokens(buy)
-                                let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                console.log(currentAccount)
-                                console.log(response)
+                                console.log("1. cay to ken", cayAmount);
+                                swapCAYforKEN(cayAmount);
+                                // const buy = ethers.utils.parseUnits(cayAmount, "ether");
+                                // console.log("formatEther" + buy)
+                                // buyTokens(buy)
+                                // let response = await KENTokenContract.balanceOf(currentAccount).call();
+                                // console.log(currentAccount)
+                                // console.log(response)
                             } else {
-                                const buy = ethers.utils.parseUnits(tokenAmount, "ether");
-                                console.log("formatUnits" + buy)
-                                sellTokens(buy)
-                                let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                console.log(currentAccount)
-                                console.log(response)
+                                console.log("2. ken to cay", kenAmount);
+                                swapKENforCAY(kenAmount);
+                                // const buy = ethers.utils.parseUnits(kenAmount, "ether");
+                                // console.log("formatUnits" + buy)
+                                // sellTokens(buy)
+                                // let response = await KENTokenContract.balanceOf(currentAccount).call();
+                                // console.log(currentAccount)
+                                // console.log(response)
                             }
-                            balanceCAYToken(currentAccount);
+                            // balanceCAYToken(currentAccount);
 
                         }}
                 >
@@ -255,14 +258,14 @@ const Pool = () => {
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
                             CAY: 0.0000
-                            <span className="percent"> 50%</span>
+                            {/* <span className="percent"> 50%</span> */}
                         </div>
                     </div>
                     <div className="coin-details">
                         <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
                             ETH: 0.0000
-                            <span className="percent"> 50%</span>
+                            {/* <span className="percent"> 50%</span> */}
                         </div>
                     </div>
                 </div>

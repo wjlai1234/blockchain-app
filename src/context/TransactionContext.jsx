@@ -197,9 +197,15 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const swapCAYforKEN = async (CAYAmount) => {
-        let response  = await poolContract.swapCAYforKEN(CAYAmount)
+        let response  = await CAYTokenContract.approve(poolContract.address, 20000)
+        let response1  = await KENTokenContract.approve(poolContract.address, 20000)
+        let response2  = await poolContract.swapCAYforKEN(CAYAmount)
         let res0 = await response.wait();
+        let res1 = await response1.wait();
+        let res2 = await response2.wait();
         console.log("swapCAYforKEN", res0);
+        console.log("swapCAYforKEN1", res1);
+        console.log("swapCAYforKEN2", res2);
     }
 
     const getExactCAYforKEN = async (CAYAmount) => {
@@ -217,9 +223,15 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const swapKENforCAY = async (KENAmount) => {
-        let response  = await poolContract.swapKENforCAY(KENAmount)
+        let response  = await CAYTokenContract.approve(poolContract.address, 20000)
+        let response1  = await KENTokenContract.approve(poolContract.address, 20000)
+        let response2  = await poolContract.swapKENforCAY(KENAmount)
         let res0 = await response.wait();
-        console.log("swapKENforCAY", res0);
+        let res1 = await response1.wait();
+        let res2 = await response2.wait();
+        console.log("swapCAYforKEN", res0);
+        console.log("swapCAYforKEN1", res1);
+        console.log("swapCAYforKEN2", res2);
     }
 
     const getExactKENforCAY = async (KENAmount) => {
@@ -227,6 +239,7 @@ export const TransactionsProvider = ({children}) => {
         let res0 = await response.wait();
         setEstCayTokenAmount(response)
         console.log("getExactKENforCAY", res0);
+        return res0;
     }
 
     const getKENforExactCAY = async (CAYAmount) => {
@@ -264,9 +277,7 @@ export const TransactionsProvider = ({children}) => {
     }
 
     useEffect(async () => {
-
         checkIfWalletIsConnect().then(r => console.log("r" + r));
-        
     }, []);
 
     return (
