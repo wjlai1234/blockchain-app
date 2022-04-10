@@ -8,8 +8,8 @@ import "hardhat/console.sol";
 contract AMM {
 
     //1000000000000000000
-    uint256 totalCAYTokenInPool;//total amount of CAY token in the pool
-    uint256 totalKENTokenInPool;//total amount of KEN token in the pool
+    uint256 public totalCAYTokenInPool;//total amount of CAY token in the pool
+    uint256 public totalKENTokenInPool;//total amount of KEN token in the pool
     uint256 K;//K constant in X*Y = K
     uint256 totalShares;
     
@@ -40,9 +40,10 @@ contract AMM {
     }
 
     //get the liquidity pool total Eth token, TkB token
-    function checkBothTokenAmountInPool() external view returns(uint256, uint256) {
-        return (totalCAYTokenInPool, totalKENTokenInPool);
+    function checkBothTokenAmountInPool() public view returns(uint256, uint256) {
+        return (totalCAYTokenInPool,totalKENTokenInPool);
     }
+
 
     //get LP balance token in the pool
     function getLPTotalCAY() public view returns (uint256 _lpCAYBalance) {
@@ -71,12 +72,12 @@ contract AMM {
         ) payable public {
         require(addCAYTokenInPool > 0 || addKENTokenInPool > 0, "Need more than Zero value");
         uint256 share;
-        if(totalCAYTokenInPool == 0 || totalKENTokenInPool == 0)  // Genesis liquidity is issued 100 Shares
+        if(totalCAYTokenInPool == 0 && totalKENTokenInPool == 0)  // Genesis liquidity is issued 100 Shares
         {
             totalCAYTokenInPool = addCAYTokenInPool;
             totalKENTokenInPool = addKENTokenInPool;
             K = totalCAYTokenInPool * totalKENTokenInPool;
-            share = 100 * PRECISION;
+            share = 100 * PRECISION; //100_000_000
         }
         else
         {

@@ -17,7 +17,8 @@ const SwapItem = (props) => {
         balanceCAYToken,
         currentBalance,
         currentAccount,
-        currentCAYTokenBalance
+        currentCAYTokenBalance,
+        resetWallet
     } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY"]);
     const [etherAmount, setEtherAmount] = useState(0);
@@ -138,11 +139,14 @@ const SwapItem = (props) => {
                 >
                     Swap
                 </button>
-                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
+                <button type="submit"
+                        className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
                             balanceCAYToken(currentAccount);
                             balanceKENToken(currentAccount);
+                            resetWallet();
+                            window.location.reload();
                         }}
                 >
                     Check
@@ -153,13 +157,35 @@ const SwapItem = (props) => {
 };
 
 const AddLiquidity = () => {
-    const {buyTokens, sellTokens, currentBalance} = useContext(TransactionContext);
-    const [coin, setCoin] = useState(["ETH", "CAY"]);
-    const [etherAmount, setEtherAmount] = useState(0);
-    const [tokenAmount, setTokenAmount] = useState(0);
+    const {
+        createPool,
+        checkBothTokenAmountInPool,
+        getAddPoolCAYRequirement,
+        getAddPoolKENRequirement,
+        cayReqAmount,
+        kenReqAmount,
+        cayPoolAmount,
+        kenPoolAmount,
+        currentKENTokenBalance,
+        currentCAYTokenBalance,
+        connectWallet
+    } = useContext(TransactionContext);
+    const [coin, setCoin] = useState(["KEN", "CAY"]);
+    const [CAYAmount, setCAYAmount] = useState(0.0);
+    const [KENAmount, setKENAmount] = useState(0.0);
+    const [toggleReq, setToggleReq] = useState(false);
+
     const rev = () => {
         setCoin([...coin.reverse()]);
     };
+
+    useEffect(() => {
+        setToggleReq(JSON.parse(window.sessionStorage.getItem("toggleReq")));
+    }, []);
+
+    useEffect(() => {
+        window.sessionStorage.setItem("toggleReq", toggleReq);
+    }, [toggleReq]);
 
     return (
         <div>
@@ -167,7 +193,7 @@ const AddLiquidity = () => {
 
             }}>
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {currentBalance} ETH</span>
+                    <span className="float-left text-white">Balance: {kenPoolAmount} KEN</span>
                 </div>
 
                 <div className="swapbox gradient-bg-welcome uk-card">
@@ -177,17 +203,28 @@ const AddLiquidity = () => {
                     </div>
 
                     <div className="swapbox_select">
-                        <input
-                            onChange={(event) => {
-                                const etherAmount = event.target.value.toString()
-                                console.log("etherAmount" + etherAmount);
-                                let formatAmount = etherAmount * 100
-                                setTokenAmount(formatAmount)
-                                console.log("tokenAmount" + formatAmount);
-                                setEtherAmount(etherAmount)
-                            }}
-                            className="number form-control select-none" placeholder="amount" id="from_amount"
-                        />
+                        {toggleReq === false && (
+                            <input
+                                onChange={(event) => {
+                                    const kenAmount = event.target.value.toString()
+                                    console.log("kenAmount" + kenAmount);
+                                    setKENAmount(kenAmount)
+
+                                }}
+                                // value={kenReqAmount}
+                                className="number form-control select-none" placeholder="amount" id="from_amount"
+                            />)}
+                        {toggleReq === true && (
+                            <input
+                                onChange={(event) => {
+                                    const kenAmount = event.target.value.toString()
+                                    console.log("kenAmount" + kenAmount);
+                                    setKENAmount(kenAmount)
+                                    getAddPoolCAYRequirement(kenAmount)
+                                }}
+                                // value={kenReqAmount}
+                                className="number form-control select-none" placeholder="amount" id="from_amount"
+                            />)}
                     </div>
                 </div>
 
@@ -196,7 +233,7 @@ const AddLiquidity = () => {
                 </div>
 
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: 0.0 CAY</span>
+                    <span className="float-left text-white">Balance: {cayPoolAmount} CAY</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
@@ -205,39 +242,75 @@ const AddLiquidity = () => {
                     </div>
 
                     <div className="swapbox_select">
-                        <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                               disabled value={tokenAmount}/>
+                        {(toggleReq == false && <input
+                            onChange={(event) => {
+                                const cayAmount = event.target.value.toString()
+                                console.log("cayAmount" + cayAmount);
+                                setCAYAmount(cayAmount)
+
+                            }}
+
+
+                            className="number form-control select-none" placeholder="amount" id="from_amount"
+                        />)}
+                        {(toggleReq == true && <input
+                            onChange={(event) => {
+                                const cayAmount = event.target.value.toString()
+                                console.log("cayAmount" + cayAmount);
+                                setCAYAmount(cayAmount)
+                                getAddPoolKENRequirement(cayAmount)
+                            }}
+
+                            value={cayReqAmount}
+                            className="number form-control select-none" placeholder="amount" id="from_amount" disabled
+                        />)}
                     </div>
                 </div>
 
-                <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
-                        id="swap_button"
-                    // onClick={() => {
-                    //     if (coin[0] === "ETH") {
-                    //         const buy = ethers.utils.parseUnits(etherAmount, "ether");
-                    //         console.log("formatEther" + buy)
-                    //         buyTokens(buy)
-                    //     } else {
-                    //         const buy = ethers.utils.parseUnits(tokenAmount, "ether");
-                    //         console.log("formatUnits" + buy)
-                    //         sellTokens(buy)
-                    //     }
-                    // }}
+                {(toggleReq == true && <button type="submit"
+                                               className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
+                                               id="swap_button"
+                                               onClick={() => {
+                                                   const cayAmount = ethers.utils.parseUnits(cayReqAmount.toString(), "ether");
+                                                   console.log("cayAmount" + cayAmount)
+                                                   const kenAmount = ethers.utils.parseUnits(KENAmount.toString(), "ether");
+                                                   console.log("kenAmount" + kenAmount)
+                                                   createPool(cayAmount, kenAmount)
+
+                                               }
+                                               }
                 >
                     Add
-                </button>
-                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
+                </button>)}
+                {(toggleReq == false && <button type="submit"
+                                               className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
+                                               id="swap_button"
+                                               onClick={() => {
+                                                   const cayAmount = ethers.utils.parseUnits(CAYAmount.toString(), "ether");
+                                                   console.log("cayAmount" + cayAmount)
+                                                   const kenAmount = ethers.utils.parseUnits(KENAmount.toString(), "ether");
+                                                   console.log("kenAmount" + kenAmount)
+                                                   createPool(cayAmount, kenAmount)
+                                                   setToggleReq(true)
+                                               }
+                                               }
+                >
+                    Add
+                </button>)}
+                <button type="submit"
+                        className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
-                            // balanceCAYToken(currentAccount);
-                            // balanceKENToken(currentAccount);
+
+                            checkBothTokenAmountInPool()
                         }}
                 >
                     Check
                 </button>
             </div>
         </div>
-    );
+    )
+        ;
 };
 
 const Pool = () => {
