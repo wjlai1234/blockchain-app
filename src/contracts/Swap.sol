@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity ^0.8.0;
 
-import "./TokenA.sol";
-import "./TokenB.sol";
+import "./CAYTOKEN.sol";
+import "./KENTOKEN.sol";
 
 contract EthSwap {
     string public name = "EthSwap Instant Exchange";

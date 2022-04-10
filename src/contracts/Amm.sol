@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.13;
+pragma solidity ^0.8.0;
 
-import "./TokenA.sol";
-import "./TokenB.sol";
+
 import "hardhat/console.sol";
+import "./KENTOKEN.sol";
+import "./CAYTOKEN.sol";
 
 contract AMM {
     uint256 totalCAYTokenInPool;//total amount of CAY token in the pool
