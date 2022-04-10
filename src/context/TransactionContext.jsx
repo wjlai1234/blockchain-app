@@ -210,7 +210,6 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const swapCAYforKEN = async (CAYAmount) => {
-        let response = await poolContract.swapCAYforKEN(CAYAmount)
         let response  = await CAYTokenContract.approve(poolContract.address, 20000)
         let response1  = await KENTokenContract.approve(poolContract.address, 20000)
         let response2  = await poolContract.swapCAYforKEN(CAYAmount)
@@ -237,7 +236,6 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const swapKENforCAY = async (KENAmount) => {
-        let response = await poolContract.swapKENforCAY(KENAmount)
         let response  = await CAYTokenContract.approve(poolContract.address, 20000)
         let response1  = await KENTokenContract.approve(poolContract.address, 20000)
         let response2  = await poolContract.swapKENforCAY(KENAmount)
