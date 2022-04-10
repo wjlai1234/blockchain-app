@@ -18,6 +18,8 @@ export const TransactionsProvider = ({children}) => {
     const [swapContract, setSwapContract] = useState(null);
     const [poolContract, setPoolContract] = useState(null);
 
+    const [cayPoolAmount, setCAYPoolAmount] = useState(0.00);
+    const [kenPoolAmount, setKENPoolAmount] = useState(0.00);
 
     const connectWallet = async () => {
         try {
@@ -166,6 +168,8 @@ export const TransactionsProvider = ({children}) => {
 
     const checkBothTokenAmountInPool = async () => {
         let response2  = await poolContract.checkBothTokenAmountInPool()
+        setCAYPoolAmount(response2[0]);
+        console.log("checkBothTokenAmountInPool", response2[0].value);
         console.log("checkBothTokenAmountInPool", response2);
     }
 
