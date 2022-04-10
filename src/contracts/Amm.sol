@@ -18,7 +18,7 @@ contract AMM {
     CAYTOKEN public cayToken;
     KENTOKEN public kenToken;
 
-    mapping(address => uint256) lpShares;
+    mapping(address => uint256) public lpShares;
     
     event PoolAreCreated(
     address account,
