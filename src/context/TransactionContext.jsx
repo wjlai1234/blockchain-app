@@ -131,7 +131,7 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const balanceKENToken = async (address) => {
-        let response = await KENTokenContract.balance(address);
+        let response = await KENTokenContract.balanceOf(address);
         console.log("token balance", response);
         setCurrentKENTokenBalance(response)
         return response
@@ -171,6 +171,7 @@ export const TransactionsProvider = ({children}) => {
 
     useEffect(async () => {
         checkIfWalletIsConnect().then(r => console.log("r" + r));
+        
     }, []);
 
     return (

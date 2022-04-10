@@ -22,15 +22,12 @@ const Dropdown = ({ label, value, options, onChange }) => {
   };
 
 const SwapItem = (props) => {
-    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance, currentKENTokenBalance} = useContext(TransactionContext);
+    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance, currentKENTokenBalance
+    } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
 
-    const rev = () => {
-        setCoin[2]('DD');
-    };
-    
     const options = [
         { label: coin[1], value: 1 },
         { label: coin[2], value: 2 },
@@ -117,6 +114,7 @@ const SwapItem = (props) => {
                 >
                     Swap
                 </button>
+
             </div>
         </div>
     );
