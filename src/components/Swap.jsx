@@ -10,7 +10,7 @@ const ethers = require('ethers')
 
 const SwapItem = (props) => {
     const {buyTokens, sellTokens, currentBalance} = useContext(TransactionContext);
-    const [coin, setCoin] = useState(["ETH", "CAY"]);
+    const [coin, setCoin] = useState(["CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
     const rev = () => {
@@ -23,7 +23,7 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                    {coin[1] === "CAY" && coin[0] === "ETH" && props.tab === "Swap" && (
+                    {coin[1] === "KEN" && coin[0] === "CAY" && props.tab === "Swap" && (
                         <span className="float-left text-white">Balance: {currentBalance} ETH</span>
                     )}
                 </div>
@@ -34,23 +34,23 @@ const SwapItem = (props) => {
                     </div>
 
                     <div className="swapbox_select">
-                        {coin[0] === "CAY" &&
+                        {coin[0] === "KEN" &&
                         (
                             <input onChange={(event) => {
                                 const tokenAmount = event.target.value.toString()
                                 console.log("tokenAmount" + tokenAmount);
-                                setEtherAmount(tokenAmount / 100)
+                                setEtherAmount(tokenAmount)
                                 setTokenAmount(tokenAmount)
                             }}
                                    className="number form-control" placeholder="amount" id="to_amount"/>
                         )
                         }
-                        {coin[0] === "ETH" && (
+                        {coin[0] === "CAY" && (
                             <input
                                 onChange={(event) => {
                                     const etherAmount = event.target.value.toString()
                                     console.log("etherAmount" + etherAmount);
-                                    let formatAmount = etherAmount * 100
+                                    let formatAmount = etherAmount
                                     setTokenAmount(formatAmount)
                                     console.log("tokenAmount" + formatAmount);
                                     setEtherAmount(etherAmount)
@@ -70,7 +70,7 @@ const SwapItem = (props) => {
                         <MdAdd className="object-center text-3xl hover:rotate-180"/>
                     </div>)}
                 <div className="flex justify-content-end">
-                    {coin[0] === "CAY" && coin[1] === "ETH" && props.tab === "Swap" && (
+                    {coin[0] === "KEN" && coin[1] === "CAY" && props.tab === "Swap" && (
                         <span className="float-left text-white">Balance: {currentBalance} ETH</span>
                     )}
                 </div>
@@ -82,24 +82,24 @@ const SwapItem = (props) => {
 
 
                     <div className="swapbox_select">
-                        {coin[1] === "ETH" && (
+                        {coin[1] === "CAY" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
                                    disabled value={etherAmount}/>
                         )}
-                        {coin[1] === "CAY" && (
+                        {coin[1] === "KEN" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
                                    disabled value={tokenAmount}/>
                         )}
                     </div>
                 </div>
 
-                {props.tab === "Swap" && coin[0] === "ETH" &&
+                {props.tab === "Swap" && coin[0] === "CAY" &&
                 (<div className="flex justify-content-between text-white mb-3">
                     <span className=" text-white">Exchange Rate</span>
                     <span className=" text-white">1 ETH = 100 CAY</span>
                 </div>)
                 }
-                {props.tab === "Swap" && coin[0] === "CAY" &&
+                {props.tab === "Swap" && coin[0] === "KEN" &&
                 (<div className="flex justify-content-between text-white mb-3">
                     <span className=" text-white">Exchange Rate</span>
                     <span className=" text-white">100 CAY = 1 ETH</span>
@@ -108,7 +108,7 @@ const SwapItem = (props) => {
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
-                            if (coin[0] === "ETH") {
+                            if (coin[0] === "CAY") {
                                 const buy = ethers.utils.parseUnits(etherAmount, "ether");
                                 console.log("formatEther" + buy)
                                 buyTokens(buy)
@@ -155,7 +155,7 @@ const AddLiquidity = () => {
                             onChange={(event) => {
                                 const etherAmount = event.target.value.toString()
                                 console.log("etherAmount" + etherAmount);
-                                let formatAmount = etherAmount * 100
+                                let formatAmount = etherAmount
                                 setTokenAmount(formatAmount)
                                 console.log("tokenAmount" + formatAmount);
                                 setEtherAmount(etherAmount)
@@ -331,7 +331,7 @@ const Withdraw = () => {
 
 
 const Main = () => {
-    const [activeTab, setActiveTab] = useState("Pool");
+    const [activeTab, setActiveTab] = useState("AddLiquidity");
     const changeTab = (tab) => {
         setActiveTab(tab);
     };
