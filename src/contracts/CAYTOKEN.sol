@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 contract CAYTOKEN {
     string  public name = "CAYDEN";
     string  public symbol = "CAY";
-    uint256 public totalSupply = 100000000000000000000; // 1 million tokens
+    uint256 public totalSupply = 10000000000000000000000000; // 1 million tokens
     uint8   public decimals = 18;
 
 

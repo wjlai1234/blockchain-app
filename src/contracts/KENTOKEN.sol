@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 contract KENTOKEN {
     string  public name = "KEN Token";
     string  public symbol = "KEN";
-    uint256 public totalSupply = 100000000000000000000; // 1 million tokens
+    uint256 public totalSupply = 10000000000000000000000000; // 1 million tokens
     uint8   public decimals = 18;
 
     event Transfer(
