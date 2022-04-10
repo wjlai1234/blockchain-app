@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import {Services, Footer,Welcome,Navbar} from "./components";
 import Swap from "./components/Swap";
+import SwapEth from "./components/SwapEth";
 import ErrorBoundary from "./context/ErrorBoundary";
 import React, {useContext} from "react";
 import logo from "./images/logo.png";
@@ -40,6 +41,7 @@ function App() {
                 <ErrorBoundary id="wallet"><Welcome /></ErrorBoundary>
             </div>
             <div id="service"><Services /></div>
+            <div id=""><SwapEth /></div>
             <div id="swap"><Swap /></div>
             
             <Footer/>
