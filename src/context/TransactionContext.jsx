@@ -81,10 +81,10 @@ export const TransactionsProvider = ({children}) => {
                     const poolData = Pool.networks[networkId]
                     if (poolData) {
                         const pool = new ethers.Contract(poolData.address, Pool.abi, signer);
-                        console.log("swap:" + pool);
+                        console.log("pool:" + pool);
                         setPoolContract(pool)
                     } else {
-                        window.alert('Swap contract not deployed to detected network.')
+                        window.alert('Pool contract not deployed to detected network.')
                     }
                 } catch (err) {
                     alert("CONTRACT_ADDRESS not set properly");
@@ -107,8 +107,9 @@ export const TransactionsProvider = ({children}) => {
             throw new Error("No ethereum object.")
         }
     };
+
     const balanceCAYToken = async (address) => {
-        let response = await CAYTokenContract.balance(address);
+        let response = await CAYTokenContract.balanceOf(address);
         console.log("token balance", response);
         setCurrentBalance(response)
         return response

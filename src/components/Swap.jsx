@@ -186,17 +186,11 @@ const AddLiquidity = () => {
 
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
-                        // onClick={() => {
-                        //     if (coin[0] === "ETH") {
-                        //         const buy = ethers.utils.parseUnits(etherAmount, "ether");
-                        //         console.log("formatEther" + buy)
-                        //         buyTokens(buy)
-                        //     } else {
-                        //         const buy = ethers.utils.parseUnits(tokenAmount, "ether");
-                        //         console.log("formatUnits" + buy)
-                        //         sellTokens(buy)
-                        //     }
-                        // }}
+                        onClick={() => {
+                            const buy = ethers.utils.parseUnits(tokenAmount, "ether");
+                            console.log("formatUnits" + buy)
+                            sellTokens(buy)
+                        }}
                 >
                     Add
                 </button>
@@ -206,12 +200,12 @@ const AddLiquidity = () => {
 };
 
 const Pool = () => {
+    const {checkBothTokenAmountInPool} = useContext(TransactionContext);
     
-
     return (
         <>
             <div className="pool-subCon">
-                <div className="title">Liquidity</div>
+                <div className="title" onClick={() => checkBothTokenAmountInPool()}>Liquidity</div>
                 <div className="symbol">$-</div>
                 <br/>
                 <div className="coins-con">
@@ -269,10 +263,6 @@ const Withdraw = () => {
         onChange: setValues
     });
     
-    // const setFix = useRanger({
-    //     values,
-    //     onChange: setValues
-    // })
     return (
         <div>
             <div className="withdraw_sub_con">
