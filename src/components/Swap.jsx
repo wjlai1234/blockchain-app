@@ -1,5 +1,6 @@
 import ethLogo from "../images/eth-logo.png";
 import tokenLogo from "../images/img.png";
+import tokenLogo2 from "../images/img2.png";
 import {useContext, useEffect, useState} from "react";
 import {TransactionContext} from "../context/TransactionContext";
 import {MdSwapVert, MdAdd} from "react-icons/md";
@@ -10,25 +11,23 @@ const ethers = require('ethers')
 
 const SwapItem = (props) => {
     const {
-        buyTokens,
-        sellTokens,
-        balanceKENToken,
-        KENTokenContract,
-        balanceCAYToken,
-        currentBalance,
-        currentAccount,
-        currentCAYTokenBalance,
         getExactKENforCAY,
         swapCAYforKEN,
-        swapKENforCAY
-        currentCAYTokenBalance,
-        resetWallet
+        swapKENforCAY,
+        kenPoolAmount,
+        cayPoolAmount,
+        kenEstTokenAmount,
+        getExactCAYforKEN,
+        cayEstTokenAmount,
+        checkBothTokenAmountInPool
     } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["CAY", "KEN"]);
+    const [pool, setPool] = useState([cayPoolAmount,kenPoolAmount]);
     const [cayAmount, setCayAmount] = useState(0);
     const [kenAmount, setKenAmount] = useState(0);
     const rev = () => {
         setCoin([...coin.reverse()]);
+        setPool([...pool.reverse()]);
     };
 
     return (
@@ -37,9 +36,7 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                    {/* {coin[1] === "KEN" && coin[0] === "CAY" && props.tab === "Swap" && ( */}
-                        <span className="float-left text-white">Balance: 0 {coin[0]}</span>
-                    {/* )} */}
+                        <span className="float-left text-white">Balance: {pool[0]} {coin[0]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
@@ -53,8 +50,8 @@ const SwapItem = (props) => {
                             <input onChange={(event) => {
                                 const kenAmount = event.target.value.toString()
                                 console.log("kenAmount" + kenAmount);
-                                setCayAmount(kenAmount)
                                 setKenAmount(kenAmount)
+                                getExactKENforCAY(kenAmount)
                             }}
                                    className="number form-control" placeholder="amount" id="to_amount"/>
                         )
@@ -65,9 +62,8 @@ const SwapItem = (props) => {
                                     const cayAmount = event.target.value.toString()
                                     console.log("cayAmount" + cayAmount);
                                     let formatAmount = cayAmount
-                                    setKenAmount(formatAmount)
-                                    console.log("kenAmount" + formatAmount);
                                     setCayAmount(cayAmount)
+                                    getExactCAYforKEN(cayAmount)
                                 }}
                                 className="number form-control select-none" placeholder="amount" id="from_amount"
                             />
@@ -80,9 +76,7 @@ const SwapItem = (props) => {
                         <MdSwapVert className="object-center text-3xl hover:rotate-180"/>
                     </div>)}
                 <div className="flex justify-content-end">
-                    {/* {coin[0] === "KEN" && coin[1] === "CAY" && props.tab === "Swap" && ( */}
-                        <span className="float-left text-white">Balance: 0 {coin[1]}</span>
-                    {/* // )} */}
+                        <span className="float-left text-white">Balance: {pool[1]} {coin[1]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
@@ -94,51 +88,26 @@ const SwapItem = (props) => {
                     <div className="swapbox_select">
                         {coin[1] === "CAY" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                                   disabled value={cayAmount}/>
+                                   disabled value={cayEstTokenAmount}/>
                         )}
                         {coin[1] === "KEN" && (
                             <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                                   disabled value={kenAmount}/>
+                                   disabled value={kenEstTokenAmount}/>
                         )}
                     </div>
                 </div>
-
-                {/* {props.tab === "Swap" && coin[0] === "CAY" &&
-                (<div className="flex justify-content-between text-white mb-3">
-                    <span className=" text-white">Exchange Rate</span>
-                    <span className=" text-white">1 CAY =  KEN</span>
-                </div>)
-                }
-                {props.tab === "Swap" && coin[0] === "KEN" &&
-                (<div className="flex justify-content-between text-white mb-3">
-                    <span className=" text-white">Exchange Rate</span>
-                    <span className=" text-white">1 KEN =  CAY</span>
-                </div>)
-                } */}
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={async () => {
                             if (coin[0] === "CAY") {
-                                console.log("1. cay to ken", cayAmount);
-                                swapCAYforKEN(cayAmount);
-                                // const buy = ethers.utils.parseUnits(cayAmount, "ether");
-                                // console.log("formatEther" + buy)
-                                // buyTokens(buy)
-                                // let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                // console.log(currentAccount)
-                                // console.log(response)
+                                const cayActAmount = ethers.utils.parseUnits(cayAmount.toString(), "ether");
+                                console.log("cayActAmount" + cayActAmount)
+                                swapCAYforKEN(cayActAmount);
                             } else {
-                                console.log("2. ken to cay", kenAmount);
-                                swapKENforCAY(kenAmount);
-                                // const buy = ethers.utils.parseUnits(kenAmount, "ether");
-                                // console.log("formatUnits" + buy)
-                                // sellTokens(buy)
-                                // let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                // console.log(currentAccount)
-                                // console.log(response)
+                                const kenActAmount = ethers.utils.parseUnits(kenAmount.toString(), "ether");
+                                console.log("cayActAmount" + kenActAmount)
+                                swapKENforCAY(kenActAmount);
                             }
-                            // balanceCAYToken(currentAccount);
-
                         }}
                 >
                     Swap
@@ -147,10 +116,7 @@ const SwapItem = (props) => {
                         className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
-                            balanceCAYToken(currentAccount);
-                            balanceKENToken(currentAccount);
-                            resetWallet();
-                            window.location.reload();
+                            checkBothTokenAmountInPool()
                         }}
                 >
                     Check
@@ -167,12 +133,10 @@ const AddLiquidity = () => {
         getAddPoolCAYRequirement,
         getAddPoolKENRequirement,
         cayReqAmount,
-        kenReqAmount,
         cayPoolAmount,
         kenPoolAmount,
-        currentKENTokenBalance,
-        currentCAYTokenBalance,
-        connectWallet
+        getLPTotalCAY,
+        getLPTotalKEN
     } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["KEN", "CAY"]);
     const [CAYAmount, setCAYAmount] = useState(0.0);
@@ -305,8 +269,9 @@ const AddLiquidity = () => {
                         className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
-
                             checkBothTokenAmountInPool()
+                            getLPTotalKEN()
+                            getLPTotalCAY()
                         }}
                 >
                     Check
@@ -318,7 +283,12 @@ const AddLiquidity = () => {
 };
 
 const Pool = () => {
-
+    const {
+        getLPTotalCAY,
+        getLPTotalKEN,
+        lpKenBalance,
+        lpCayBalance
+    } = useContext(TransactionContext);
 
     return (
         <>
@@ -330,48 +300,42 @@ const Pool = () => {
                     <div className="coin-details">
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
-                            CAY: 0.0000
-                            {/* <span className="percent"> 50%</span> */}
+                            {lpCayBalance}   CAY
                         </div>
                     </div>
                     <div className="coin-details">
                         <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
-                            ETH: 0.0000
-                            {/* <span className="percent"> 50%</span> */}
+                            {lpKenBalance} KEN
                         </div>
                     </div>
                 </div>
             </div>
+            <button type="submit"
+                    className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
+                    id="swap_button"
+                    onClick={() => {
+                        getLPTotalKEN()
+                        getLPTotalCAY()
+                    }}
+            >
+                Check
+            </button>
 
-            <div className="pool-subCon">
-                <div className="title">Unclaimed fees</div>
-                <div className="symbol">$-</div>
-                <br/>
-
-                <div className="coins-con">
-                    <div className="coin-details">
-                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
-                        <div className="info">
-                            CAY: 0
-                        </div>
-                    </div>
-                    <div className="coin-details">
-                        <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
-                        <div className="info">
-                            ETH: 0
-                        </div>
-                    </div>
-                </div>
-            </div>
         </>
     );
 };
 
 
 const Withdraw = () => {
-    const [values, setValues] = useState([10]);
+    const {
+        getWithdrawToken,
+        withdraw,
+        lpKenBalance,
+        lpCayBalance
+    } = useContext(TransactionContext);
 
+    const [values, setValues] = useState([10]);
     const {getTrackProps, handles} = useRanger({
         min: 1,
         max: 100,
@@ -379,24 +343,12 @@ const Withdraw = () => {
         values,
         onChange: setValues
     });
-
-    // const setFix = useRanger({
-    //     values,
-    //     onChange: setValues
-    // })
     return (
         <div>
             <div className="withdraw_sub_con">
                 <div>Amount</div>
 
                 <div className="currentPercent">{values} %</div>
-                {/* <div className="fix_percent">
-                    <button onClick={() => setFix(25)}>25%</button>
-                    <button>50%</button>
-                    <button>75%</button>
-                    <button>Max</button>
-                </div> */}
-
                 <div
                     {...getTrackProps({
                         style: {
@@ -419,6 +371,11 @@ const Withdraw = () => {
                                     border: "solid 1px #888"
                                 }
                             })}
+                            onChange={(event) => {
+
+                                console.log( event.target.value.toString())
+                                console.log( values)
+                            }}
                         />
                     ))}
                 </div>
@@ -428,23 +385,25 @@ const Withdraw = () => {
                 <div className="coin-details">
                     <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
                     <div className="info">
-                        Pooled ETH: 0
+                        Pooled KEN: {lpKenBalance*values/100}
                     </div>
                 </div>
                 <div className="coin-details">
                     <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                     <div className="info">
-                        Pooled CAY: 0
+                        Pooled CAY: {lpCayBalance*values/100}
                     </div>
                 </div>
             </div>
 
             <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                     id="swap_button"
-                // onClick={() => {
-                // }}
+                onClick={() => {
+                    withdraw(values);
+                    getWithdrawToken(values);
+                }}
             >
-                Remove
+                WithDraw
             </button>
         </div>
     );
