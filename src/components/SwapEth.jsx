@@ -30,7 +30,7 @@ const SwapItem = (props) => {
     const [tokenAmount, setTokenAmount] = useState(0);
     const [tokenBAmount, setTokenBAmount] = useState(0);
     const rev = () => {
-        setCoin([...coin.reverse()]);
+        setCoin[2]('DD');
     };
     const options = [
         { label: coin[1], value: coin[1] },

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.13;
 
-import "./Token.sol";
+import "./CAYTOKEN.sol";
+import "./KENTOKEN.sol";
 
-contract Swap {
+contract EthSwap {
     string public name = "EthSwap Instant Exchange";
-    Token public token;
+    CAYTOKEN public cayToken;
+    KENTOKEN public kenToken;
     uint public rate = 100;
 
     event TokensPurchased(
@@ -22,27 +24,29 @@ contract Swap {
         uint rate
     );
 
-    constructor(Token _token)  {
-        token = _token;
+    constructor(CAYTOKEN _cayToken,KENTOKEN _kenToken){
+        cayToken = _cayToken;
+        kenToken = _kenToken;
     }
 
-    function buyTokens() public payable {
+
+    function buyCAYTokens() public payable {
         // Calculate the number of tokens to buy
         uint tokenAmount = msg.value * rate;
 
         // Require that EthSwap has enough tokens
-        require(token.balanceOf(address(this)) >= tokenAmount);
+        require(cayToken.balanceOf(address(this)) >= tokenAmount);
 
         // Transfer tokens to the user
-        token.transfer(msg.sender, tokenAmount);
+        cayToken.transfer(msg.sender, tokenAmount);
 
         // Emit an event
-        emit TokensPurchased(msg.sender, address(token), tokenAmount, rate);
+        emit TokensPurchased(msg.sender, address(cayToken), tokenAmount, rate);
     }
 
-    function sellTokens(uint _amount) public payable{
+    function sellCAYTokens(uint _amount) public payable{
         // User can't sell more tokens than they have
-        require(token.balanceOf(msg.sender) >= _amount);
+        require(cayToken.balanceOf(msg.sender) >= _amount);
 
         // Calculate the amount of Ether to redeem
         uint etherAmount = _amount / rate;
@@ -51,11 +55,46 @@ contract Swap {
         require(address(this).balance >= etherAmount);
 
         // Perform sale
-        token.transferFrom(msg.sender, address(this), _amount);
+        cayToken.transferFrom(msg.sender, address(this), _amount);
         payable(msg.sender).transfer(etherAmount);
 
         // Emit an event
-        emit TokensSold(msg.sender, address(token), _amount, rate);
+        emit TokensSold(msg.sender, address(cayToken), _amount, rate);
     }
+
+
+
+    function sellKENTokens(uint _amount) public payable{
+        // User can't sell more tokens than they have
+        require(kenToken.balanceOf(msg.sender) >= _amount);
+
+        // Calculate the amount of Ether to redeem
+        uint etherAmount = _amount / rate;
+
+        // Require that EthSwap has enough Ether
+        require(address(this).balance >= etherAmount);
+
+        // Perform sale
+        kenToken.transferFrom(msg.sender, address(this), _amount);
+        payable(msg.sender).transfer(etherAmount);
+
+        // Emit an event
+        emit TokensSold(msg.sender, address(kenToken), _amount, rate);
+    }
+
+    function buyKENTokens() public payable {
+        // Calculate the number of tokens to buy
+        uint tokenAmount = msg.value * rate;
+
+        // Require that EthSwap has enough tokens
+        require(kenToken.balanceOf(address(this)) >= tokenAmount);
+
+        // Transfer tokens to the user
+        kenToken.transfer(msg.sender, tokenAmount);
+
+        // Emit an event
+        emit TokensPurchased(msg.sender, address(kenToken), tokenAmount, rate);
+    }
+
 
 }
