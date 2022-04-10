@@ -2,36 +2,52 @@ import ethLogo from "../images/eth-logo.png";
 import tokenLogo from "../images/img.png";
 import {useContext, useEffect, useState} from "react";
 import {TransactionContext} from "../context/TransactionContext";
-import {MdSwapVert, MdAdd} from "react-icons/md";
-import { useRanger } from 'react-ranger';
 import './Swap.css';
+import ErrorBoundary from "../context/ErrorBoundary";
 
 const ethers = require('ethers')
 
-const Dropdown = ({ label, value, options, onChange }) => {
+const Dropdown = ({label, value, options, onChange}) => {
     return (
-      <label>
-        {label}
-        <select value={value} onChange={onChange} style={{ backgroundColor: "black"}}>
-          {options.map((option) => (
-            <option value={option.value}>{option.label}</option>
-          ))}
-        </select>
-      </label>
+        <label>
+            {label}
+            <select value={value} onChange={onChange} style={{backgroundColor: "black"}}>
+                {options.map((option) => (
+                    <option value={option.value}>{option.label}</option>
+                ))}
+            </select>
+        </label>
     );
-  };
+};
 
 const SwapItem = (props) => {
-    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance, currentKENTokenBalance
+
+    const {
+        buyCAYTokens,
+        buyKENTokens,
+        KENTokenContract,
+        CAYTokenContract,
+        setCurrentCAYTokenBalance,
+        setCurrentKENTokenBalance,
+        sellKENTokens,
+        sellCAYTokens,
+        currentCAYTokenBalance,
+        balanceCAYToken,
+        balanceKENToken,
+        currentKENTokenBalance,
+        currentAccount,
+        currentBalance
     } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
 
     const options = [
-        { label: coin[1], value: 1 },
-        { label: coin[2], value: 2 },
+        {label: coin[1], value: 1},
+        {label: coin[2], value: 2},
     ];
+
+
 
     const [value, setValue] = useState(1);
 
@@ -45,32 +61,32 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                        <span className="float-left text-white">Balance: {currentBalance} {coin[0]}</span>
+                    <span className="float-left text-white">Balance: {currentBalance} {coin[0]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
                         <img src={ethLogo} className="token_image select-none " id="from_token_img" alt=""/>
                         <span className="p-3  select-none" id="from_token_text">{coin[0]}</span>
                     </div>
-                    
+
                     <div className="swapbox_select">
-                            <input
-                                onChange={(event) => {
-                                    const etherAmount = event.target.value.toString()
-                                    console.log("etherAmount" + etherAmount);
-                                    let formatAmount = etherAmount * 100
-                                    setTokenAmount(formatAmount)
-                                    console.log("tokenAmount" + formatAmount);
-                                    setEtherAmount(etherAmount)
-                                }}
-                                className="number form-control select-none" placeholder="amount" id="from_amount"
-                            />
+                        <input
+                            onChange={(event) => {
+                                const etherAmount = event.target.value.toString()
+                                console.log("etherAmount" + etherAmount);
+                                let formatAmount = etherAmount * 100
+                                setTokenAmount(formatAmount)
+                                console.log("tokenAmount" + formatAmount);
+                                setEtherAmount(etherAmount)
+                            }}
+                            className="number form-control select-none" placeholder="amount" id="from_amount"
+                        />
                     </div>
                 </div>
 
                 <div className="flex justify-content-end">
                     <span className="float-left text-white">
-                        Balance: {coin[value] == 'CAY'? currentCAYTokenBalance : currentKENTokenBalance} 
+                        Balance: {coin[value] == 'CAY' ? currentCAYTokenBalance : currentKENTokenBalance}
                         {" " + coin[value]}
                     </span>
 
@@ -80,16 +96,16 @@ const SwapItem = (props) => {
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">
                             <Dropdown
-                            options={options}
-                            value={value}
-                            onChange={handleChange}
-                        />
+                                options={options}
+                                value={value}
+                                onChange={handleChange}
+                            />
                         </span>
                     </div>
 
                     <div className="swapbox_select">
                         <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                            disabled value={tokenAmount}/>
+                               disabled value={tokenAmount}/>
                     </div>
                 </div>
 
@@ -97,7 +113,7 @@ const SwapItem = (props) => {
                     <span className=" text-white">Exchange Rate</span>
                     <span className=" text-white">1 ETH = 100 {coin[value]}</span>
                 </div>
-                
+
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
@@ -114,7 +130,15 @@ const SwapItem = (props) => {
                 >
                     Swap
                 </button>
-
+                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
+                        id="swap_button"
+                        onClick={() => {
+                            balanceCAYToken(currentAccount);
+                            balanceKENToken(currentAccount);
+                        }}
+                >
+                    Check
+                </button>
             </div>
         </div>
     );
@@ -122,16 +146,30 @@ const SwapItem = (props) => {
 
 const SellItem = (props) => {
 
-    const {sellKENTokens, sellCAYTokens, currentCAYTokenBalance, currentKENTokenBalance, currentBalance} = useContext(TransactionContext);
+    const {
+        KENTokenContract,
+        CAYTokenContract,
+        setCurrentCAYTokenBalance,
+        setCurrentKENTokenBalance,
+        sellKENTokens,
+        sellCAYTokens,
+        currentCAYTokenBalance,
+        balanceCAYToken,
+        balanceKENToken,
+        currentKENTokenBalance,
+        currentAccount,
+        currentBalance
+    } = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
-    const [tokenAAmount, setTokenAAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
-    const [tokenBAmount, setTokenBAmount] = useState(0);
+
+
+
 
     const options = [
-        { label: coin[1], value: 1 },
-        { label: coin[2], value: 2 },
+        {label: coin[1], value: 1},
+        {label: coin[2], value: 2},
     ];
 
     const [value, setValue] = useState(1);
@@ -147,7 +185,7 @@ const SellItem = (props) => {
             }}>
                 <div className="flex justify-content-end">
                     <span className="float-left text-white">
-                        Balance: {coin[value] == 'CAY'? currentCAYTokenBalance : currentKENTokenBalance} 
+                        Balance: {coin[value] == 'CAY' ? currentCAYTokenBalance : currentKENTokenBalance}
                         {" " + coin[value]}
                     </span>
                 </div>
@@ -157,10 +195,10 @@ const SellItem = (props) => {
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">
                             <Dropdown
-                            options={options}
-                            value={value}
-                            onChange={handleChange}
-                        />
+                                options={options}
+                                value={value}
+                                onChange={handleChange}
+                            />
                         </span>
                     </div>
 
@@ -171,22 +209,22 @@ const SellItem = (props) => {
                             setEtherAmount(tokenAmount / 100)
                             setTokenAmount(tokenAmount)
                         }}
-                        className="number form-control" placeholder="amount" id="to_amount"/>
+                               className="number form-control" placeholder="amount" id="to_amount"/>
                     </div>
                 </div>
-                
+
                 <div className="flex justify-content-end">
-                        <span className="float-left text-white">Balance: {currentBalance} {coin[0]}</span>
+                    <span className="float-left text-white">Balance: {currentBalance} {coin[0]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
                         <img src={ethLogo} className="token_image select-none " id="from_token_img" alt=""/>
                         <span className="p-3  select-none" id="from_token_text">{coin[0]}</span>
                     </div>
-                    
+
                     <div className="swapbox_select">
                         <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                            disabled value={etherAmount}/>
+                               disabled value={etherAmount}/>
                     </div>
                 </div>
 
@@ -194,7 +232,7 @@ const SellItem = (props) => {
                     <span className=" text-white">Exchange Rate</span>
                     <span className=" text-white">1 ETH = 100 {coin[value]}</span>
                 </div>
-                
+
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
                         onClick={() => {
@@ -207,10 +245,20 @@ const SellItem = (props) => {
                                 console.log("formatUnits" + buy)
                                 sellKENTokens(buy)
                             }
-                            
+                            balanceCAYToken(currentAccount);
+                            balanceKENToken(currentAccount);
                         }}
                 >
                     Swap
+                </button>
+                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
+                        id="swap_button"
+                        onClick={() => {
+                            balanceCAYToken(currentAccount);
+                            balanceKENToken(currentAccount);
+                        }}
+                >
+                    Check
                 </button>
             </div>
         </div>
@@ -249,7 +297,7 @@ const Main = () => {
 
                         <hr/>
 
-                        {activeTab === "Buy"? <SwapItem tab="Swap"/> : <SellItem tab="Swap"/>  }
+                        {activeTab === "Buy" ?<ErrorBoundary><SwapItem tab="Swap"/> </ErrorBoundary> : <ErrorBoundary><SellItem tab="Swap"/></ErrorBoundary> }
                     </div>
                 </div>
             </div>

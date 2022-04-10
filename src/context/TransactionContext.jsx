@@ -54,6 +54,7 @@ export const TransactionsProvider = ({children}) => {
                         const cayToken = new ethers.Contract(cayTokenData.address, CAYTOKEN.abi, signer);
                         console.log("token:" + cayToken.toString());
                         setCAYTokenContract(cayToken)
+
                     } else {
                         window.alert('CAY Token contract not deployed to detected network.')
                     }
@@ -64,6 +65,9 @@ export const TransactionsProvider = ({children}) => {
                         const kenToken = new ethers.Contract(kenTokenData.address, KENTOKEN.abi, signer);
                         console.log("token:" + kenToken.toString());
                         setKENTokenContract(kenToken)
+
+
+
                     } else {
                         window.alert('KEN Token contract not deployed to detected network.')
                     }
@@ -98,6 +102,8 @@ export const TransactionsProvider = ({children}) => {
                     console.log(`balance: ${balanceInEth} ETH`)
                 }).catch(err => console.log(err));
                 setCurrentAccount(accounts[0]);
+
+
                 console.log("Account Found!" + accounts[0]);
             } else {
                 console.log("No accounts found");
@@ -109,10 +115,10 @@ export const TransactionsProvider = ({children}) => {
     };
 
     const balanceCAYToken = async (address) => {
-        let response = await CAYTokenContract.balanceOf(address);
+        let response =ethers.utils.formatUnits(  await CAYTokenContract.balanceOf(address),18);
         console.log("token balance", response);
         setCurrentCAYTokenBalance(response)
-        return response
+
     }
 
     const buyCAYTokens = async (etherAmount) => {
@@ -131,10 +137,10 @@ export const TransactionsProvider = ({children}) => {
     }
 
     const balanceKENToken = async (address) => {
-        let response = await KENTokenContract.balanceOf(address);
-        console.log("token balance", response);
-        setCurrentKENTokenBalance(response)
-        return response
+        let balance =ethers.utils.formatUnits( await KENTokenContract.balanceOf(address),18);
+        console.log("token balance",balance);
+        setCurrentKENTokenBalance(balance)
+
     }
 
     const buyKENTokens = async (etherAmount) => {
@@ -169,7 +175,7 @@ export const TransactionsProvider = ({children}) => {
         console.log("checkBothTokenAmountInPool", response2);
     }
 
-    useEffect(async () => {
+    useEffect( () => {
         checkIfWalletIsConnect().then(r => console.log("r" + r));
         
     }, []);
@@ -178,7 +184,8 @@ export const TransactionsProvider = ({children}) => {
         <TransactionContext.Provider value={{currentAccount, connectWallet,
             currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,
             sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool,
-            currentCAYTokenBalance, currentKENTokenBalance
+            currentCAYTokenBalance, currentKENTokenBalance,KENTokenContract,setCurrentKENTokenBalance,
+            setCurrentCAYTokenBalance,CAYTokenContract
         }}>
             {children}
         </TransactionContext.Provider>
