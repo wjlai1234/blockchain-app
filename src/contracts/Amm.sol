@@ -54,13 +54,13 @@ contract AMM {
     }
 
     //to get the total Tkb token needed to add into pool
-    function getAddPoolCAYRequirement(uint256 _cayToken) public view activePool returns(uint256 reqCAYToken) {
-        reqCAYToken = _cayToken * totalCAYTokenInPool / totalKENTokenInPool ;
+    function getAddPoolCAYRequirement(uint256 _kenToken) public view activePool returns(uint256 reqCAYToken) {
+        reqCAYToken = _kenToken * totalCAYTokenInPool / totalKENTokenInPool ;
     }
 
     //to get the total eth token needed to add into pool
-    function getAddPoolKENRequirement(uint256 _kenToken) public view activePool returns(uint256 reqKENToken) {
-        reqKENToken = _kenToken * totalCAYTokenInPool / totalKENTokenInPool ;
+    function getAddPoolKENRequirement(uint256 _cayToken) public view activePool returns(uint256 reqKENToken) {
+        reqKENToken = _cayToken * totalKENTokenInPool / totalCAYTokenInPool ;
     }
 
 
