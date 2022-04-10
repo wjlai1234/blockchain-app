@@ -1,5 +1,6 @@
 import ethLogo from "../images/eth-logo.png";
 import tokenLogo from "../images/img.png";
+import tokenLogo2 from "../images/img2.png";
 import {useContext, useEffect, useState} from "react";
 import {TransactionContext} from "../context/TransactionContext";
 import './Swap.css';
@@ -93,7 +94,7 @@ const SwapItem = (props) => {
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
-                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <img src={ coin[value] == 'CAY' ? tokenLogo : tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">
                             <Dropdown
                                 options={options}
@@ -192,7 +193,7 @@ const SellItem = (props) => {
 
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
-                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <img src={ coin[value] == 'CAY' ? tokenLogo : tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">
                             <Dropdown
                                 options={options}
