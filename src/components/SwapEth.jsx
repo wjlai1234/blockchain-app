@@ -22,7 +22,7 @@ const Dropdown = ({ label, value, options, onChange }) => {
   };
 
 const SwapItem = (props) => {
-    const {buyCAYTokens, buyKENTokens, currentBalance, balanceCAYToken} = useContext(TransactionContext);
+    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance} = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
@@ -72,7 +72,7 @@ const SwapItem = (props) => {
                 </div>
 
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {balanceCAYToken} {coin[value]}</span>
+                    <span className="float-left text-white">Balance: {currentCAYTokenBalance} {coin[value]}</span>
 
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">

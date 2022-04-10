@@ -111,7 +111,7 @@ export const TransactionsProvider = ({children}) => {
     const balanceCAYToken = async (address) => {
         let response = await CAYTokenContract.balanceOf(address);
         console.log("token balance", response);
-        setCurrentBalance(response)
+        setCurrentCAYTokenBalance(response)
         return response
     }
 
@@ -133,7 +133,7 @@ export const TransactionsProvider = ({children}) => {
     const balanceKENToken = async (address) => {
         let response = await KENTokenContract.balance(address);
         console.log("token balance", response);
-        setCurrentBalance(response)
+        setCurrentKENTokenBalance(response)
         return response
     }
 
@@ -176,7 +176,8 @@ export const TransactionsProvider = ({children}) => {
     return (
         <TransactionContext.Provider value={{currentAccount, connectWallet,
             currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,
-            sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool
+            sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool,
+            currentCAYTokenBalance, currentKENTokenBalance
         }}>
             {children}
         </TransactionContext.Provider>
