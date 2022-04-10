@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 
-contract Token {
-    string  public name = "CAYDEN Token";
-    string  public symbol = "CAY";
-    uint256 public totalSupply = 1000000000000000000000000; // 1 million tokens
+contract KENTOKEN {
+    string  public name = "KEN Token";
+    string  public symbol = "KEN";
+    uint256 public totalSupply = 100000000000000000000; // 1 million tokens
     uint8   public decimals = 18;
 
     event Transfer(
@@ -28,7 +28,7 @@ contract Token {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balanceOf[msg.sender] >= _value);
+        require(balanceOf[msg.sender] >= _value,  "balance KEN of msg sender is less than tranfer value!");
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
         emit Transfer(msg.sender, _to, _value);
@@ -42,8 +42,8 @@ contract Token {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= balanceOf[_from]);
-        require(_value <= allowance[_from][msg.sender]);
+        require(_value <= balanceOf[_from], "token B KEN less than the value required to transform! ");
+        require(_value <= allowance[_from][msg.sender],"Approvel token B KEN less than the value required to transform! ");
         balanceOf[_from] -= _value;
         balanceOf[_to] += _value;
         allowance[_from][msg.sender] -= _value;
@@ -51,7 +51,5 @@ contract Token {
         return true;
     }
 
-    function balance(address addr) public view returns (uint256) {
-        return balanceOf[addr];
-    }
+
 }
