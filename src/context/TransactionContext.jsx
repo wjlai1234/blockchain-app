@@ -277,9 +277,8 @@ export const TransactionsProvider = ({children}) => {
             swapCAYforKEN,swapKENforCAY,getExactCAYforKEN,getCAYforExactKEN,
             getExactKENforCAY,getKENforExactCAY,getLPTotalCAY,getLPTotalKEN,
             getWithdrawToken,withdraw,
-            currentCAYTokenBalance, currentKENTokenBalance,
             cayReqAmount, kenReqAmount, cayEstTokenAmount, kenEstTokenAmount,
-            lpCayBalance,lpKenBalance
+            lpCayBalance,lpKenBalance,
             currentCAYTokenBalance, currentKENTokenBalance,KENTokenContract,setCurrentKENTokenBalance,
             setCurrentCAYTokenBalance,CAYTokenContract
         }}>
