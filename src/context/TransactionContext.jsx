@@ -17,7 +17,16 @@ export const TransactionsProvider = ({children}) => {
     const [KENTokenContract, setKENTokenContract] = useState(null);
     const [swapContract, setSwapContract] = useState(null);
     const [poolContract, setPoolContract] = useState(null);
-
+    const [cayPoolAmount, setCAYPoolAmount] = useState(0.00);
+    const [kenPoolAmount, setKENPoolAmount] = useState(0.00);
+    const [cayReqAmount, setCayReqAmount] = useState(0.00);
+    const [kenReqAmount, setKenReqAmount] = useState(0.00);
+    const [cayEstTokenAmount, setEstCayTokenAmount] = useState(0.00);
+    const [kenEstTokenAmount, setEstKenTokenAmount] = useState(0.00);
+    const [lpCayBalance, setLpCayBalance] = useState(0.00);
+    const [lpKenBalance, setLpKenBalance] = useState(0.00);
+    const [cayEstWithdrawAmount, setCayEstWithdrawAmount] = useState(0.00);
+    const [kenEstWithdrawAmount, setKenEstWithdrawAmount] = useState(0.00);
 
     const connectWallet = async () => {
         try {
@@ -54,7 +63,6 @@ export const TransactionsProvider = ({children}) => {
                         const cayToken = new ethers.Contract(cayTokenData.address, CAYTOKEN.abi, signer);
                         console.log("token:" + cayToken.toString());
                         setCAYTokenContract(cayToken)
-
                     } else {
                         window.alert('CAY Token contract not deployed to detected network.')
                     }
@@ -65,9 +73,6 @@ export const TransactionsProvider = ({children}) => {
                         const kenToken = new ethers.Contract(kenTokenData.address, KENTOKEN.abi, signer);
                         console.log("token:" + kenToken.toString());
                         setKENTokenContract(kenToken)
-
-
-
                     } else {
                         window.alert('KEN Token contract not deployed to detected network.')
                     }
@@ -172,10 +177,94 @@ export const TransactionsProvider = ({children}) => {
 
     const checkBothTokenAmountInPool = async () => {
         let response2  = await poolContract.checkBothTokenAmountInPool()
+        setCAYPoolAmount(response2[0]);
+        console.log("checkBothTokenAmountInPool", response2[0].value);
         console.log("checkBothTokenAmountInPool", response2);
     }
 
-    useEffect( () => {
+    const getAddPoolCAYRequirement = async (KENAmount) => {
+        let response  = await poolContract.getAddPoolCAYRequirement(KENAmount)
+        let res0 = await response.wait();
+        setCayReqAmount(response)
+        console.log("getAddPoolCAYRequirement", res0);
+    }
+
+    const getAddPoolKENRequirement = async (CAYAmount) => {
+        let response  = await poolContract.getAddPoolKENRequirement(CAYAmount)
+        let res0 = await response.wait();
+        setKenReqAmount(response)
+        console.log("getAddPoolKENRequirement", res0);
+    }
+
+    const swapCAYforKEN = async (CAYAmount) => {
+        let response  = await poolContract.swapCAYforKEN(CAYAmount)
+        let res0 = await response.wait();
+        console.log("swapCAYforKEN", res0);
+    }
+
+    const getExactCAYforKEN = async (CAYAmount) => {
+        let response  = await poolContract.getExactCAYforKEN(CAYAmount)
+        let res0 = await response.wait();
+        setEstKenTokenAmount(response)
+        console.log("getExactCAYforKEN", res0);
+    }
+
+    const getCAYforExactKEN = async (KENAmount) => {
+        let response  = await poolContract.getCAYforExactKEN(KENAmount)
+        let res0 = await response.wait();
+        setEstCayTokenAmount(response)
+        console.log("getCAYforExactKEN", res0);
+    }
+
+    const swapKENforCAY = async (KENAmount) => {
+        let response  = await poolContract.swapKENforCAY(KENAmount)
+        let res0 = await response.wait();
+        console.log("swapKENforCAY", res0);
+    }
+
+    const getExactKENforCAY = async (KENAmount) => {
+        let response  = await poolContract.getExactKENforCAY(KENAmount)
+        let res0 = await response.wait();
+        setEstCayTokenAmount(response)
+        console.log("getExactKENforCAY", res0);
+    }
+
+    const getKENforExactCAY = async (CAYAmount) => {
+        let response  = await poolContract.getKENforExactCAY(CAYAmount)
+        let res0 = await response.wait();
+        setEstKenTokenAmount(response)
+        console.log("getKENforExactCAY", res0);
+    }
+
+    const getLPTotalCAY = async () => {
+        let response  = await poolContract.getLPTotalCAY()
+        let res0 = await response.wait();
+        setLpCayBalance(response)
+        console.log("getLPTotalCAY", res0);
+    }
+
+    const getLPTotalKEN = async () => {
+        let response  = await poolContract.getLPTotalKEN()
+        let res0 = await response.wait();
+        setLpKenBalance(response)
+        console.log("getLPTotalKEN", res0);
+    }
+
+    const getWithdrawToken = async (WithdrawPercentage) => {
+        let response  = await poolContract.getWithdrawToken(WithdrawPercentage)
+        let res0 = await response.wait();
+        setLpKenBalance(response)
+        console.log("getWithdrawToken", res0);
+    }
+
+    const withdraw = async (WithdrawPercentage) => {
+        let response  = await poolContract.withdraw(WithdrawPercentage)
+        let res0 = await response.wait();
+        console.log("withdraw", res0);
+    }
+
+    useEffect(async () => {
+
         checkIfWalletIsConnect().then(r => console.log("r" + r));
         
     }, []);
@@ -184,6 +273,13 @@ export const TransactionsProvider = ({children}) => {
         <TransactionContext.Provider value={{currentAccount, connectWallet,
             currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,
             sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool,
+            getAddPoolCAYRequirement,getAddPoolKENRequirement,
+            swapCAYforKEN,swapKENforCAY,getExactCAYforKEN,getCAYforExactKEN,
+            getExactKENforCAY,getKENforExactCAY,getLPTotalCAY,getLPTotalKEN,
+            getWithdrawToken,withdraw,
+            currentCAYTokenBalance, currentKENTokenBalance,
+            cayReqAmount, kenReqAmount, cayEstTokenAmount, kenEstTokenAmount,
+            lpCayBalance,lpKenBalance
             currentCAYTokenBalance, currentKENTokenBalance,KENTokenContract,setCurrentKENTokenBalance,
             setCurrentCAYTokenBalance,CAYTokenContract
         }}>

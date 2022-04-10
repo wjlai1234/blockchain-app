@@ -3,7 +3,7 @@ import tokenLogo from "../images/img.png";
 import {useContext, useEffect, useState} from "react";
 import {TransactionContext} from "../context/TransactionContext";
 import {MdSwapVert, MdAdd} from "react-icons/md";
-import {useRanger} from 'react-ranger';
+import { useRanger } from 'react-ranger';
 import './Swap.css';
 
 const ethers = require('ethers')
@@ -32,7 +32,7 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                    {coin[1] === "CAY" && coin[0] === "ETH" && props.tab === "Swap" && (
+                    {coin[1] === "KEN" && coin[0] === "CAY" && props.tab === "Swap" && (
                         <span className="float-left text-white">Balance: {currentBalance} ETH</span>
                     )}
                 </div>
@@ -116,36 +116,19 @@ const SwapItem = (props) => {
                 }
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
-                        onClick={async () => {
+                        onClick={() => {
                             if (coin[0] === "ETH") {
                                 const buy = ethers.utils.parseUnits(etherAmount, "ether");
                                 console.log("formatEther" + buy)
                                 buyTokens(buy)
-                                let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                console.log(currentAccount)
-                                console.log(response)
                             } else {
                                 const buy = ethers.utils.parseUnits(tokenAmount, "ether");
                                 console.log("formatUnits" + buy)
                                 sellTokens(buy)
-                                let response = await KENTokenContract.balanceOf(currentAccount).call();
-                                console.log(currentAccount)
-                                console.log(response)
                             }
-                            balanceCAYToken(currentAccount);
-
                         }}
                 >
                     Swap
-                </button>
-                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
-                        id="swap_button"
-                        onClick={() => {
-                            balanceCAYToken(currentAccount);
-                            balanceKENToken(currentAccount);
-                        }}
-                >
-                    Check
                 </button>
             </div>
         </div>
@@ -169,7 +152,7 @@ const AddLiquidity = () => {
                 <div className="flex justify-content-end">
                     <span className="float-left text-white">Balance: {currentBalance} ETH</span>
                 </div>
-
+                
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
                         <img src={ethLogo} className="token_image select-none " id="from_token_img" alt=""/>
@@ -194,7 +177,7 @@ const AddLiquidity = () => {
                 <div className="flex justify-center ">
                     <MdAdd className="object-center text-3xl hover:rotate-180"/>
                 </div>
-
+                
                 <div className="flex justify-content-end">
                     <span className="float-left text-white">Balance: 0.0 CAY</span>
                 </div>
@@ -206,34 +189,19 @@ const AddLiquidity = () => {
 
                     <div className="swapbox_select">
                         <input className="number form-control select-none" placeholder="amount" id="from_amount"
-                               disabled value={tokenAmount}/>
+                                disabled value={tokenAmount}/>
                     </div>
                 </div>
 
                 <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                         id="swap_button"
-                    // onClick={() => {
-                    //     if (coin[0] === "ETH") {
-                    //         const buy = ethers.utils.parseUnits(etherAmount, "ether");
-                    //         console.log("formatEther" + buy)
-                    //         buyTokens(buy)
-                    //     } else {
-                    //         const buy = ethers.utils.parseUnits(tokenAmount, "ether");
-                    //         console.log("formatUnits" + buy)
-                    //         sellTokens(buy)
-                    //     }
-                    // }}
-                >
-                    Add
-                </button>
-                <button type="submit" className="bg-[#2952e3] py-2 px-7 float-right rounded-full cursor-pointer hover:bg-[#2546bd]"
-                        id="swap_button"
                         onClick={() => {
-                            // balanceCAYToken(currentAccount);
-                            // balanceKENToken(currentAccount);
+                            const buy = ethers.utils.parseUnits(tokenAmount, "ether");
+                            console.log("formatUnits" + buy)
+                            sellTokens(buy)
                         }}
                 >
-                    Check
+                    Add
                 </button>
             </div>
         </div>
@@ -241,19 +209,19 @@ const AddLiquidity = () => {
 };
 
 const Pool = () => {
-
-
+    const {checkBothTokenAmountInPool} = useContext(TransactionContext);
+    
     return (
         <>
             <div className="pool-subCon">
-                <div className="title">Liquidity</div>
+                <div className="title" onClick={() => checkBothTokenAmountInPool()}>Liquidity</div>
                 <div className="symbol">$-</div>
                 <br/>
                 <div className="coins-con">
                     <div className="coin-details">
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
-                            CAY: 0.0000
+                            CAY: 0.0000 
                             <span className="percent"> 50%</span>
                         </div>
                     </div>
@@ -292,21 +260,18 @@ const Pool = () => {
 };
 
 
+
 const Withdraw = () => {
     const [values, setValues] = useState([10]);
 
-    const {getTrackProps, handles} = useRanger({
+    const { getTrackProps, handles } = useRanger({
         min: 1,
         max: 100,
         stepSize: 1,
         values,
         onChange: setValues
     });
-
-    // const setFix = useRanger({
-    //     values,
-    //     onChange: setValues
-    // })
+    
     return (
         <div>
             <div className="withdraw_sub_con">
@@ -319,34 +284,34 @@ const Withdraw = () => {
                     <button>75%</button>
                     <button>Max</button>
                 </div> */}
-
+            
                 <div
                     {...getTrackProps({
-                        style: {
-                            height: "4px",
-                            background: "#ddd",
-                            boxShadow: "inset 0 1px 2px rgba(0,0,0,.6)",
-                            borderRadius: "2px"
-                        }
+                    style: {
+                        height: "4px",
+                        background: "#ddd",
+                        boxShadow: "inset 0 1px 2px rgba(0,0,0,.6)",
+                        borderRadius: "2px"
+                    }
                     })}
                 >
-                    {handles.map(({getHandleProps}) => (
-                        <button
-                            {...getHandleProps({
-                                style: {
-                                    width: "14px",
-                                    height: "14px",
-                                    outline: "none",
-                                    borderRadius: "100%",
-                                    background: "linear-gradient(to bottom, #eee 45%, #ddd 55%)",
-                                    border: "solid 1px #888"
-                                }
-                            })}
-                        />
+                    {handles.map(({ getHandleProps }) => (
+                    <button
+                        {...getHandleProps({
+                        style: {
+                            width: "14px",
+                            height: "14px",
+                            outline: "none",
+                            borderRadius: "100%",
+                            background: "linear-gradient(to bottom, #eee 45%, #ddd 55%)",
+                            border: "solid 1px #888"
+                        }
+                        })}
+                    />
                     ))}
                 </div>
             </div>
-
+            
             <div className="withdraw_sub_con">
                 <div className="coin-details">
                     <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
@@ -364,8 +329,8 @@ const Withdraw = () => {
 
             <button type="submit" className="bg-[#2952e3] py-2 px-7  rounded-full cursor-pointer hover:bg-[#2546bd]"
                     id="swap_button"
-                // onClick={() => {
-                // }}
+                    // onClick={() => {
+                    // }}
             >
                 Remove
             </button>
@@ -384,7 +349,7 @@ const Main = () => {
             <div className="container ">
                 <div className="row">
                     <div className="col col-md-6 offset-md-3 white-glassmorphism" id="window">
-                        {/* <div className="col col-md-10 offset-md-1 white-glassmorphism" id="window"> */}
+                    {/* <div className="col col-md-10 offset-md-1 white-glassmorphism" id="window"> */}
                         <div className="selectTab">
                             <div
                                 className={"tabStyle " + (activeTab === "Swap" ? "activeTab" : "")}
@@ -413,6 +378,7 @@ const Main = () => {
 
                             </div>
 
+                            
 
                             <div
                                 className={
@@ -424,7 +390,7 @@ const Main = () => {
 
                             </div>
 
-
+                            
                         </div>
 
                         <hr/>
@@ -440,7 +406,7 @@ const Main = () => {
                         {activeTab === "Withdraw" && (
                             <Withdraw/>
                         )}
-
+                        
                     </div>
                 </div>
             </div>
