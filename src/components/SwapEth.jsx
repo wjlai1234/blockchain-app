@@ -22,7 +22,7 @@ const Dropdown = ({ label, value, options, onChange }) => {
   };
 
 const SwapItem = (props) => {
-    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance} = useContext(TransactionContext);
+    const {buyCAYTokens, buyKENTokens, currentBalance, currentCAYTokenBalance, currentKENTokenBalance} = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAmount, setTokenAmount] = useState(0);
@@ -72,7 +72,10 @@ const SwapItem = (props) => {
                 </div>
 
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {currentCAYTokenBalance} {coin[value]}</span>
+                    <span className="float-left text-white">
+                        Balance: {coin[value] == 'CAY'? currentCAYTokenBalance : currentKENTokenBalance} 
+                        {" " + coin[value]}
+                    </span>
 
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
@@ -121,7 +124,7 @@ const SwapItem = (props) => {
 
 const SellItem = (props) => {
 
-    const {sellKENTokens, sellCAYTokens, currentBalance} = useContext(TransactionContext);
+    const {sellKENTokens, sellCAYTokens, currentCAYTokenBalance, currentKENTokenBalance, currentBalance} = useContext(TransactionContext);
     const [coin, setCoin] = useState(["ETH", "CAY", "KEN"]);
     const [etherAmount, setEtherAmount] = useState(0);
     const [tokenAAmount, setTokenAAmount] = useState(0);
@@ -133,7 +136,7 @@ const SellItem = (props) => {
         { label: coin[2], value: 2 },
     ];
 
-    const [value, setValue] = useState(coin[1]);
+    const [value, setValue] = useState(1);
 
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -145,7 +148,10 @@ const SellItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {currentBalance} {coin[value]}</span>
+                    <span className="float-left text-white">
+                        Balance: {coin[value] == 'CAY'? currentCAYTokenBalance : currentKENTokenBalance} 
+                        {" " + coin[value]}
+                    </span>
                 </div>
 
                 <div className="swapbox gradient-bg-welcome uk-card">
