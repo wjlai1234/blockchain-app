@@ -262,7 +262,7 @@ const Withdraw = () => {
     const [values, setValues] = useState([10]);
 
     const { getTrackProps, handles } = useRanger({
-        min: 0,
+        min: 1,
         max: 100,
         stepSize: 1,
         values,
