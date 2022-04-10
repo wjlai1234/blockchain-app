@@ -80,7 +80,7 @@ const SwapItem = (props) => {
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
-                        <img src={coin[0] === "CAY" ? tokenLogo : tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
+                        <img src={coin[1] === "CAY" ? tokenLogo : tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">{coin[1]}</span>
                     </div>
 
@@ -166,7 +166,7 @@ const AddLiquidity = () => {
 
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
-                        <img src={ethLogo} className="token_image select-none " id="from_token_img" alt=""/>
+                        <img src={tokenLogo2} className="token_image select-none " id="from_token_img" alt=""/>
                         <span className="p-3  select-none" id="from_token_text">{coin[0]}</span>
                     </div>
 
@@ -205,7 +205,7 @@ const AddLiquidity = () => {
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
-                        <img src={coin[0] === "CAY" ? tokenLogo : tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
+                        <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <span className="p-3 select-none" id="to_token_text">{coin[1]}</span>
                     </div>
 
@@ -230,7 +230,7 @@ const AddLiquidity = () => {
                             }}
 
                             value={cayReqAmount}
-                            className="number form-control select-none" placeholder="amount" id="from_amount" disabled
+                            className="number form-control select-none" placeholder="amount" id="from_amount" 
                         />)}
                     </div>
                 </div>
@@ -403,7 +403,7 @@ const Withdraw = () => {
                     getWithdrawToken(values);
                 }}
             >
-                WithDraw
+                Withdraw
             </button>
         </div>
     );
@@ -459,8 +459,6 @@ const Main = () => {
                                 <h4 className="swapheader">Withdraw</h4>
 
                             </div>
-
-
                         </div>
 
                         <hr/>
