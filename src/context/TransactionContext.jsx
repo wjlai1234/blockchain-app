@@ -174,7 +174,8 @@ export const TransactionsProvider = ({children}) => {
 
     return (
         <TransactionContext.Provider value={{currentAccount, connectWallet,
-            currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,sellCAYTokens,buyKENTokens,sellKENTokens
+            currentBalance, balanceCAYToken, balanceKENToken,buyCAYTokens,
+            sellCAYTokens,buyKENTokens,sellKENTokens,createPool,checkBothTokenAmountInPool
         }}>
             {children}
         </TransactionContext.Provider>
