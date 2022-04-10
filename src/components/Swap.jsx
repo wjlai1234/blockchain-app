@@ -36,7 +36,7 @@ const SwapItem = (props) => {
 
             }}>
                 <div className="flex justify-content-end">
-                        <span className="float-left text-white">Balance: {pool[0]} {coin[0]}</span>
+                        <span className="float-left text-white">Pool Balance: {pool[0]} {coin[0]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="from_token_select">
@@ -76,7 +76,7 @@ const SwapItem = (props) => {
                         <MdSwapVert className="object-center text-3xl hover:rotate-180"/>
                     </div>)}
                 <div className="flex justify-content-end">
-                        <span className="float-left text-white">Balance: {pool[1]} {coin[1]}</span>
+                        <span className="float-left text-white">Pool Balance: {pool[1]} {coin[1]}</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
@@ -161,7 +161,7 @@ const AddLiquidity = () => {
 
             }}>
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {kenPoolAmount} KEN</span>
+                    <span className="float-left text-white">Pool Balance: {kenPoolAmount} KEN</span>
                 </div>
 
                 <div className="swapbox gradient-bg-welcome uk-card">
@@ -201,7 +201,7 @@ const AddLiquidity = () => {
                 </div>
 
                 <div className="flex justify-content-end">
-                    <span className="float-left text-white">Balance: {cayPoolAmount} CAY</span>
+                    <span className="float-left text-white">Pool Balance: {cayPoolAmount} CAY</span>
                 </div>
                 <div className="swapbox gradient-bg-welcome uk-card">
                     <div className="swapbox_select token_select" id="to_token_select">
@@ -294,19 +294,19 @@ const Pool = () => {
         <>
             <div className="pool-subCon">
                 <div className="title">Liquidity</div>
-                <div className="symbol">$-</div>
+                <div className="symbol">$</div>
                 <br/>
                 <div className="coins-con">
                     <div className="coin-details">
                         <img src={tokenLogo} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
-                            {lpCayBalance}   CAY
+                            {lpCayBalance ? lpCayBalance : 0} CAY
                         </div>
                     </div>
                     <div className="coin-details">
-                        <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                        <img src={tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
                         <div className="info">
-                            {lpKenBalance} KEN
+                            {lpKenBalance ? lpKenBalance : 0} KEN
                         </div>
                     </div>
                 </div>
@@ -383,7 +383,7 @@ const Withdraw = () => {
 
             <div className="withdraw_sub_con">
                 <div className="coin-details">
-                    <img src={ethLogo} className="token_image select-none" id="to_token_img" alt=""/>
+                    <img src={tokenLogo2} className="token_image select-none" id="to_token_img" alt=""/>
                     <div className="info">
                         Pooled KEN: {lpKenBalance*values/100}
                     </div>
