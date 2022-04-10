@@ -282,7 +282,7 @@ export const TransactionsProvider = ({children}) => {
         window.sessionStorage.setItem("kenPoolAmount", kenPoolAmount);
         window.sessionStorage.setItem("lpCayBalance", lpCayBalance);
         window.sessionStorage.setItem("lpKenBalance", lpKenBalance);
-    }, [cayPoolAmount,kenPoolAmount]);
+    }, [cayPoolAmount,kenPoolAmount,lpKenBalance,lpCayBalance]);
 
     return (
         <TransactionContext.Provider
