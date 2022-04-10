@@ -27,6 +27,7 @@ function App() {
                 <li className={`mx-4 cursor-pointer`}><a href="#wallet" className="navItem">Wallet</a></li>
                 <li className={`mx-4 cursor-pointer`}><a href="#service" className="navItem">Details</a></li>
                 <li className={`mx-4 cursor-pointer`}><a href="#swap" className="navItem">Swap</a></li>
+                <li className={`mx-4 cursor-pointer`}><a href="#pool" className="navItem">Pool</a></li>
 
                 {!currentAccount && (
                 <li onClick={connectWallet} className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
@@ -41,8 +42,8 @@ function App() {
                 <ErrorBoundary id="wallet"><Welcome /></ErrorBoundary>
             </div>
             <div id="service"><Services /></div>
-            <div id=""><SwapEth /></div>
-            <div id="swap"><Swap /></div>
+            <div id="swap"><SwapEth /></div>
+            <div id="pool"><Swap /></div>
             
             <Footer/>
         </div>
