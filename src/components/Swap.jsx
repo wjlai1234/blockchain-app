@@ -400,7 +400,7 @@ const Withdraw = () => {
                     id="swap_button"
                 onClick={() => {
                     withdraw(values);
-                    getWithdrawToken(values);
+                    //getWithdrawToken(values);
                 }}
             >
                 Withdraw
