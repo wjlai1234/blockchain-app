@@ -56,10 +56,10 @@ const SwapItem = (props) => {
         setValue(event.target.value);
     };
 
-    useEffect(() => {
-        balanceCAYToken(currentAccount);
-        balanceKENToken(currentAccount);
-    }, []);
+    // useEffect(() => {
+    //     balanceCAYToken(currentAccount);
+    //     balanceKENToken(currentAccount);
+    // }, []);
 
     return (
         <div>
